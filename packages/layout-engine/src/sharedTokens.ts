@@ -44,6 +44,16 @@ export const TIMELINE_STYLE_VALUES: EnumOptionDeclaration['values'] = [
 /** Common color token declarations reused across layouts. */
 export const COMMON_COLOR_TOKENS = {
   text: { key: 'text', label: { de: 'Text', en: 'Text' }, default: '#1b1f23', cssVar: '--cv-text' },
-  muted: { key: 'muted', label: { de: 'Gedämpft', en: 'Muted' }, default: '#55606b', cssVar: '--cv-muted' },
-  border: { key: 'border', label: { de: 'Rahmen', en: 'Border' }, default: '#d0d7de', cssVar: '--cv-border' },
+  muted: {
+    key: 'muted',
+    label: { de: 'Gedämpft', en: 'Muted' },
+    default: '#55606b',
+    cssVar: '--cv-muted',
+  },
+  border: {
+    key: 'border',
+    label: { de: 'Rahmen', en: 'Border' },
+    default: '#d0d7de',
+    cssVar: '--cv-border',
+  },
 } as const;

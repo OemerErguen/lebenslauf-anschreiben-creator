@@ -100,18 +100,23 @@ import {
 
 export const yourLayoutDesign = defineDesign({
   // --- Identity ---
-  id: 'your-layout',                              // Unique, kebab-case
+  id: 'your-layout', // Unique, kebab-case
   name: { de: 'Dein Layout', en: 'Your Layout' },
   description: { de: '...', en: '...' },
-  thumbnail: '',                                    // Preview image URL (can be empty initially)
+  thumbnail: '', // Preview image URL (can be empty initially)
 
   // --- Scope ---
-  documentTypes: ['lebenslauf'],                   // Which document types this supports
+  documentTypes: ['lebenslauf'], // Which document types this supports
   supportedLocales: ['de', 'en'],
 
   // --- Design tokens ---
   colors: [
-    { key: 'primary', label: { de: 'Akzent', en: 'Accent' }, default: '#2563eb', cssVar: '--cv-primary' },
+    {
+      key: 'primary',
+      label: { de: 'Akzent', en: 'Accent' },
+      default: '#2563eb',
+      cssVar: '--cv-primary',
+    },
     COMMON_COLOR_TOKENS.text,
     COMMON_COLOR_TOKENS.muted,
     COMMON_COLOR_TOKENS.border,
@@ -182,7 +187,7 @@ export const designDefinitions = [
   sidebarLeftDesign,
   fullWidthDesign,
   topHeaderDesign,
-  yourLayoutDesign,        // ← Add here
+  yourLayoutDesign, // ← Add here
 ] as const;
 ```
 
@@ -236,11 +241,11 @@ These rules are non-negotiable for any layout contribution:
 
 ### Existing Layouts as Reference
 
-| Layout | Slots | Key Feature |
-|--------|-------|-------------|
-| `sidebar-left` | `sidebar` + `main` | 2-column grid, sidebar position toggleable (left/right) |
-| `full-width` | `main` only | Single-column flex, compact spacing |
-| `top-header` | `header` + `sidebar` + `main` | 2D grid, full-width header row |
+| Layout         | Slots                         | Key Feature                                             |
+| -------------- | ----------------------------- | ------------------------------------------------------- |
+| `sidebar-left` | `sidebar` + `main`            | 2-column grid, sidebar position toggleable (left/right) |
+| `full-width`   | `main` only                   | Single-column flex, compact spacing                     |
+| `top-header`   | `header` + `sidebar` + `main` | 2D grid, full-width header row                          |
 
 Study these in `packages/layouts/src/` before starting your own.
 
@@ -274,6 +279,7 @@ Check the [issues](https://github.com/OemerErguen/lebenslauf-anschreiben-creator
 Every PR must satisfy **all** of the following before it can be merged:
 
 ### Code Quality
+
 - [ ] `pnpm lint` passes with zero errors
 - [ ] `pnpm format:check` passes
 - [ ] `pnpm typecheck` passes across all packages
@@ -281,6 +287,7 @@ Every PR must satisfy **all** of the following before it can be merged:
 - [ ] `pnpm build` succeeds
 
 ### For Layout / Component / Preset PRs
+
 - [ ] All user-facing strings have both `de` and `en` translations
 - [ ] CSS uses only print-safe units (`mm`, `pt`) — no `px` on printed output
 - [ ] CSS uses only `var(--cv-*)` custom properties — no hardcoded colors/fonts
@@ -291,6 +298,7 @@ Every PR must satisfy **all** of the following before it can be merged:
 - [ ] Tested with sample data in both `de` and `en` locales
 
 ### For All PRs
+
 - [ ] No unrelated changes included
 - [ ] No `console.log`, debug code, or TODO comments left behind
 - [ ] Branch is up to date with `main`

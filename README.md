@@ -73,30 +73,30 @@ Open [http://localhost:5173](http://localhost:5173).
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start Vite dev server (port 5173) |
-| `pnpm build` | Production build |
+| Command          | Description                          |
+| ---------------- | ------------------------------------ |
+| `pnpm dev`       | Start Vite dev server (port 5173)    |
+| `pnpm build`     | Production build                     |
 | `pnpm typecheck` | TypeScript check across all packages |
-| `pnpm lint` | ESLint (flat config, v9) |
-| `pnpm format` | Prettier |
-| `pnpm test` | Run all tests (Vitest) |
-| `pnpm test:e2e` | Playwright e2e tests |
-| `pnpm clean` | Remove dist/cache artifacts |
+| `pnpm lint`      | ESLint (flat config, v9)             |
+| `pnpm format`    | Prettier                             |
+| `pnpm test`      | Run all tests (Vitest)               |
+| `pnpm test:e2e`  | Playwright e2e tests                 |
+| `pnpm clean`     | Remove dist/cache artifacts          |
 
 ## Tech Stack
 
-| Layer | Tech |
-|-------|------|
-| Framework | React 19, Vite 8 |
-| State | Zustand with localStorage persistence |
-| Styling | Tailwind CSS (app UI), CSS custom properties (CV rendering) |
-| Rich text | TipTap |
-| PDF | Paged.js polyfill in isolated iframe |
-| i18n | i18next / react-i18next |
-| Schemas | Zod (Extended JSON Resume) |
-| Monorepo | pnpm workspaces, Turbo |
-| CI/CD | GitHub Actions, GitHub Pages |
+| Layer     | Tech                                                        |
+| --------- | ----------------------------------------------------------- |
+| Framework | React 19, Vite 8                                            |
+| State     | Zustand with localStorage persistence                       |
+| Styling   | Tailwind CSS (app UI), CSS custom properties (CV rendering) |
+| Rich text | TipTap                                                      |
+| PDF       | Paged.js polyfill in isolated iframe                        |
+| i18n      | i18next / react-i18next                                     |
+| Schemas   | Zod (Extended JSON Resume)                                  |
+| Monorepo  | pnpm workspaces, Turbo                                      |
+| CI/CD     | GitHub Actions, GitHub Pages                                |
 
 ## Project Structure
 

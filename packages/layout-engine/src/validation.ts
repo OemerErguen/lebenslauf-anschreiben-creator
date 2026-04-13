@@ -29,4 +29,3 @@ export function getCompatibleComponents(
     return !alreadyAssigned;
   });
 }
-

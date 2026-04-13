@@ -10,11 +10,7 @@
  * @param fallback
  * @returns The string value if present, otherwise the fallback
  */
-export function optStr(
-  opts: Record<string, unknown>,
-  key: string,
-  fallback: string,
-): string {
+export function optStr(opts: Record<string, unknown>, key: string, fallback: string): string {
   const v = opts[key];
   return typeof v === 'string' ? v : fallback;
 }
@@ -58,11 +54,7 @@ export function optStrArray(
  * @param fallback
  * @returns The array if present, otherwise the fallback
  */
-export function optArray<T>(
-  opts: Record<string, unknown>,
-  key: string,
-  fallback: T[],
-): T[] {
+export function optArray<T>(opts: Record<string, unknown>, key: string, fallback: T[]): T[] {
   const v = opts[key];
   return Array.isArray(v) ? (v as T[]) : fallback;
 }
