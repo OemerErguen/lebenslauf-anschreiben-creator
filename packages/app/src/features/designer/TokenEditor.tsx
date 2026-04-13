@@ -133,7 +133,8 @@ export function TokenEditor() {
           {design.options &&
             Object.entries(design.options).map(([, decl]) => {
               if (decl.type === 'enum') {
-                const currentValue = (tokens.options[decl.key] as string) ?? decl.default;
+                const currentValue =
+                  (tokens.options[decl.key] as string | undefined) ?? decl.default;
                 return (
                   <div key={decl.key} className="flex items-center justify-between">
                     <span className="text-sm text-slate-600">{decl.label[uiLocale]}</span>

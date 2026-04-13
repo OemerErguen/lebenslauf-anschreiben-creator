@@ -6,8 +6,8 @@ import type { ComponentRenderProps } from '@cv/layout-engine';
  * @returns React element displaying the photo, or null if no image
  */
 export function Photo({ resume, options }: ComponentRenderProps) {
-  const shape = (options['shape'] as string) ?? 'circle';
-  const size = (options['size'] as string) ?? 'md';
+  const shape = (options['shape'] as string | undefined) ?? 'circle';
+  const size = (options['size'] as string | undefined) ?? 'md';
 
   if (!resume.basics.image) return null;
 

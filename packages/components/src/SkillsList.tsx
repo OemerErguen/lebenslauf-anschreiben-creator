@@ -241,7 +241,7 @@ function GroupCard({
  * @returns React element displaying the skills section, or null if empty
  */
 export function SkillsList({ resume, locale, tokens, options, slot }: ComponentRenderProps) {
-  const displayMode = (options['displayMode'] as string) ?? 'text';
+  const displayMode = (options['displayMode'] as string | undefined) ?? 'text';
   const explicitColumns = options['columns'] as number | undefined;
 
   if (resume.skills.length === 0) return null;
@@ -270,7 +270,7 @@ export function SkillsList({ resume, locale, tokens, options, slot }: ComponentR
   return (
     <section className="cv-section">
       <h2
-        className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string) ?? 'uppercase-spaced'}`}
+        className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string | undefined) ?? 'uppercase-spaced'}`}
       >
         {getLabel(locale, 'skills')}
       </h2>

@@ -147,7 +147,7 @@ export const sidebarLeftDesign = defineDesign({
   },
 
   css: (opts) => {
-    const position = (opts['sidebar.position'] as string) ?? 'left';
+    const position = (opts['sidebar.position'] as string | undefined) ?? 'left';
     const columns = position === 'right' ? '1fr 70mm' : '70mm 1fr';
     const sidebarOrder = position === 'right' ? 'order: 2;' : '';
     const mainOrder = position === 'right' ? 'order: 1;' : '';

@@ -7,9 +7,9 @@ import type { ComponentRenderProps } from '@cv/layout-engine';
  * @returns React element displaying the letter photo, or null if no image
  */
 export function LetterPhoto({ options }: ComponentRenderProps) {
-  const shape = (options['shape'] as string) ?? 'circle';
-  const image = (options['image'] as string) ?? '';
-  const name = (options['name'] as string) ?? '';
+  const shape = (options['shape'] as string | undefined) ?? 'circle';
+  const image = (options['image'] as string | undefined) ?? '';
+  const name = (options['name'] as string | undefined) ?? '';
 
   if (!image) return null;
 

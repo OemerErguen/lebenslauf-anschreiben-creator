@@ -15,10 +15,10 @@ interface LetterProfile {
  * @returns React element displaying the letter contact strip, or null if empty
  */
 export function LetterContact({ options, slot }: ComponentRenderProps) {
-  const email = (options['email'] as string) ?? '';
-  const phone = (options['phone'] as string) ?? '';
-  const url = (options['url'] as string) ?? '';
-  const city = (options['city'] as string) ?? '';
+  const email = (options['email'] as string | undefined) ?? '';
+  const phone = (options['phone'] as string | undefined) ?? '';
+  const url = (options['url'] as string | undefined) ?? '';
+  const city = (options['city'] as string | undefined) ?? '';
   const profiles = (options['profiles'] as LetterProfile[] | undefined) ?? [];
 
   const items: { key: string; network: string; value: string; href?: string | undefined }[] = [];

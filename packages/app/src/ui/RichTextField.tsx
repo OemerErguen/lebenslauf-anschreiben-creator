@@ -27,14 +27,11 @@ export function RichTextField({ label, value, onChange }: RichTextFieldProps) {
 
   // Sync external value changes (e.g., import, preset switch)
   useEffect(() => {
-    if (!editor) return;
     const current = editor.getHTML();
     if (value !== current) {
       editor.commands.setContent(value || '', { emitUpdate: false });
     }
   }, [value, editor]);
-
-  if (!editor) return null;
 
   return (
     <div className="flex flex-col gap-1 text-sm">

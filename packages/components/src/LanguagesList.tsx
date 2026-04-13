@@ -13,7 +13,7 @@ export function LanguagesList({ resume, locale, tokens }: ComponentRenderProps) 
   return (
     <section className="cv-section">
       <h2
-        className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string) ?? 'uppercase-spaced'}`}
+        className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string | undefined) ?? 'uppercase-spaced'}`}
       >
         {getLabel(locale, 'languages')}
       </h2>

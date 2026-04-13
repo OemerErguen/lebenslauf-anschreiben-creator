@@ -32,7 +32,7 @@ export function designTokensToCss(design: DesignDefinition, tokens: ResolvedToke
 
   // Spacing
   if (design.spacing) {
-    const spacingKey = tokens.spacing ?? design.spacing.default;
+    const spacingKey = tokens.spacing;
     const scale = design.spacing.scale[spacingKey] ?? design.spacing.scale[design.spacing.default];
     if (scale) {
       lines.push(`  --cv-spacing-section: ${scale.section};`);

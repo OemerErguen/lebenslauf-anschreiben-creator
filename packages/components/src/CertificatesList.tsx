@@ -16,7 +16,7 @@ export function CertificatesList({ resume, locale, tokens, slot }: ComponentRend
   return (
     <section className={sectionCls}>
       <h2
-        className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string) ?? 'uppercase-spaced'}`}
+        className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string | undefined) ?? 'uppercase-spaced'}`}
       >
         {getLabel(locale, 'certificates')}
       </h2>

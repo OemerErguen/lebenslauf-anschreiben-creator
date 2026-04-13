@@ -155,8 +155,8 @@ function RenderBoth({ item }: { item: ContactItem }) {
  * @returns React element displaying the contact info section, or null if empty
  */
 export function ContactInfo({ resume, locale, tokens, options, slot }: ComponentRenderProps) {
-  const displayStyle = (options['displayStyle'] as string) ?? 'both';
-  const layout = (options['layout'] as string) ?? 'vertical';
+  const displayStyle = (options['displayStyle'] as string | undefined) ?? 'both';
+  const layout = (options['layout'] as string | undefined) ?? 'vertical';
   const { basics } = resume;
 
   const items = buildContactItems(basics, locale);
@@ -186,7 +186,7 @@ export function ContactInfo({ resume, locale, tokens, options, slot }: Component
   return (
     <section className="cv-section">
       <h2
-        className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string) ?? 'uppercase-spaced'}`}
+        className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string | undefined) ?? 'uppercase-spaced'}`}
       >
         {getLabel(locale, 'contact')}
       </h2>

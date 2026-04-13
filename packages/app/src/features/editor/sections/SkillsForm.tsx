@@ -25,7 +25,7 @@ function emptyChild(): SkillChild {
 }
 
 function isGroup(s: Skill): boolean {
-  return (s.children?.length ?? 0) > 0;
+  return s.children.length > 0;
 }
 
 const DISPLAY_MODES = [

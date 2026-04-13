@@ -191,6 +191,7 @@ export function renderDesignPage(
     documentType = o.documentType ?? 'lebenslauf';
     coverLetter = o.coverLetter;
     renderDin5008 = o.renderDin5008;
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     renderCoverLetter = o.renderCoverLetter;
   } else {
     resume = resumeOrOpts;

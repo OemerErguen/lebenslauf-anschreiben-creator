@@ -39,7 +39,8 @@ export function useSlotComponentOption(
   const anschreibenDefaults = useMemo(() => rawAnschreibenDefaults ?? [], [rawAnschreibenDefaults]);
   const anschreibenAssignments = cl[overrideKey] ?? anschreibenDefaults;
   const anschreibenMatch = anschreibenAssignments.find((a) => a.componentId === componentId);
-  const anschreibenValue = (anschreibenMatch?.options[optionKey] as string) ?? defaultValue;
+  const anschreibenValue =
+    (anschreibenMatch?.options[optionKey] as string | undefined) ?? defaultValue;
 
   const setAnschreibenValue = useCallback(
     (newValue: string) => {
@@ -51,7 +52,7 @@ export function useSlotComponentOption(
   // Regular CV slot path
   const cvAssignments = allAssignments[slotName] ?? [];
   const cvMatch = cvAssignments.find((a) => a.componentId === componentId);
-  const cvValue = (cvMatch?.options[optionKey] as string) ?? defaultValue;
+  const cvValue = (cvMatch?.options[optionKey] as string | undefined) ?? defaultValue;
 
   const setCvValue = useCallback(
     (newValue: string) => {

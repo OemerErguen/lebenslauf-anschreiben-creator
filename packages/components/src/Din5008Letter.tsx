@@ -61,7 +61,7 @@ export function Din5008Letter({
 }: Din5008LetterProps) {
   const sender = coverLetter.sender;
   const recipient = coverLetter.recipient;
-  const form = coverLetter.din5008Form ?? 'B';
+  const form = coverLetter.din5008Form;
 
   const headerStyle = config.headerBg ? { background: config.headerBg } : undefined;
   const footerStyle = config.footerBg ? { background: config.footerBg } : undefined;
@@ -82,7 +82,7 @@ export function Din5008Letter({
 
       {/* Fold and punch marks — top values are inline to avoid CSS variable
            scoping issues when Paged.js restructures the DOM during pagination. */}
-      {(coverLetter.showFoldMarks ?? true) && (
+      {coverLetter.showFoldMarks && (
         <>
           <div className="cv-din5008-fold1" style={{ top: '105mm' }} />
           <div className="cv-din5008-punch" style={{ top: '148.5mm' }} />
@@ -108,7 +108,7 @@ export function Din5008Letter({
 
       {/* Information block (right side) — postal sender + date */}
       <div className="cv-din5008-info">
-        {(coverLetter.showSenderInfo ?? true) && (
+        {coverLetter.showSenderInfo && (
           <>
             <div className="cv-din5008-info-name">{sender.name}</div>
             {sender.location?.address && <div>{sender.location.address}</div>}

@@ -14,7 +14,7 @@ export function CustomSection({ resume, tokens }: ComponentRenderProps) {
       {resume.custom.map((c) => (
         <section key={c.id} className="cv-section cv-main-section">
           <h2
-            className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string) ?? 'uppercase-spaced'}`}
+            className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string | undefined) ?? 'uppercase-spaced'}`}
           >
             {c.title}
           </h2>

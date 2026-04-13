@@ -49,33 +49,29 @@ export function SlotOptionsEditor({ slotName }: SlotOptionsEditorProps) {
           );
         }
 
-        if (decl.type === 'range') {
-          const rangeValue = typeof rawValue === 'number' ? rawValue : decl.default;
-          return (
-            <div key={decl.key} className="flex items-center justify-between gap-2">
-              <span className="text-xs font-medium text-slate-600">{decl.label[uiLocale]}</span>
-              <div className="flex items-center gap-2">
-                <input
-                  type="range"
-                  min={decl.min}
-                  max={decl.max}
-                  step={decl.step}
-                  value={rangeValue}
-                  onChange={(e) => {
-                    setSlotOption(slotName, decl.key, Number(e.target.value));
-                  }}
-                  className="w-20"
-                />
-                <span className="w-10 text-right text-xs text-slate-500">
-                  {String(rangeValue)}
-                  {decl.unit}
-                </span>
-              </div>
+        const rangeValue = typeof rawValue === 'number' ? rawValue : decl.default;
+        return (
+          <div key={decl.key} className="flex items-center justify-between gap-2">
+            <span className="text-xs font-medium text-slate-600">{decl.label[uiLocale]}</span>
+            <div className="flex items-center gap-2">
+              <input
+                type="range"
+                min={decl.min}
+                max={decl.max}
+                step={decl.step}
+                value={rangeValue}
+                onChange={(e) => {
+                  setSlotOption(slotName, decl.key, Number(e.target.value));
+                }}
+                className="w-20"
+              />
+              <span className="w-10 text-right text-xs text-slate-500">
+                {String(rangeValue)}
+                {decl.unit}
+              </span>
             </div>
-          );
-        }
-
-        return null;
+          </div>
+        );
       })}
     </div>
   );

@@ -27,7 +27,7 @@ export function DocumentToolbar() {
 
   if (!design) return null;
 
-  const localeOptions = (design.supportedLocales ?? ['de', 'en']).map((loc) => ({
+  const localeOptions = design.supportedLocales.map((loc) => ({
     value: loc,
     label: loc === 'de' ? 'Deutsch' : 'English',
   }));

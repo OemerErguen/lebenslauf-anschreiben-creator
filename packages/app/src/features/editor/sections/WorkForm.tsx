@@ -99,7 +99,7 @@ export function WorkForm(props: SlotFormProps) {
                 />
                 <div className="pb-1">
                   <Toggle
-                    checked={w.currentlyWorking ?? false}
+                    checked={w.currentlyWorking}
                     onChange={(checked) => {
                       patch(w.id, {
                         currentlyWorking: checked,

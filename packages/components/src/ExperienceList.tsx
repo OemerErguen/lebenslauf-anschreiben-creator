@@ -11,7 +11,7 @@ import { toHtml } from './renderHtml.js';
 export function ExperienceList({ resume, locale, tokens }: ComponentRenderProps) {
   if (resume.work.length === 0) return null;
 
-  const timelineStyle = (tokens.options['timelineStyle'] as string) ?? 'plain';
+  const timelineStyle = (tokens.options['timelineStyle'] as string | undefined) ?? 'plain';
 
   const entries = resume.work.map((w) => {
     const endDate = w.currentlyWorking ? undefined : w.endDate;
@@ -38,7 +38,7 @@ export function ExperienceList({ resume, locale, tokens }: ComponentRenderProps)
   return (
     <section className="cv-section cv-main-section">
       <h2
-        className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string) ?? 'uppercase-spaced'}`}
+        className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string | undefined) ?? 'uppercase-spaced'}`}
       >
         {getLabel(locale, 'experience')}
       </h2>

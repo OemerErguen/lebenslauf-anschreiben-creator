@@ -11,8 +11,8 @@ export function LetterTitleForm({ slotName, componentId }: SlotFormProps) {
   const { t } = useTranslation();
   const [options, patchOptions] = useZoneComponentOptions(slotName, componentId);
 
-  const name = (options.name as string) ?? '';
-  const label = (options.label as string) ?? '';
+  const name = (options.name as string | undefined) ?? '';
+  const label = (options.label as string | undefined) ?? '';
 
   return (
     <div className="flex flex-col gap-3">

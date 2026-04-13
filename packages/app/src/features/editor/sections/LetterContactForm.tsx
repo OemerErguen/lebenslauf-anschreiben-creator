@@ -32,10 +32,10 @@ export function LetterContactForm({ slotName, componentId }: SlotFormProps) {
   const { t } = useTranslation();
   const [options, patchOptions] = useZoneComponentOptions(slotName, componentId);
 
-  const email = (options.email as string) ?? '';
-  const phone = (options.phone as string) ?? '';
-  const url = (options.url as string) ?? '';
-  const city = (options.city as string) ?? '';
+  const email = (options.email as string | undefined) ?? '';
+  const phone = (options.phone as string | undefined) ?? '';
+  const url = (options.url as string | undefined) ?? '';
+  const city = (options.city as string | undefined) ?? '';
   const profiles = (options.profiles as LetterProfile[] | undefined) ?? [];
 
   const addProfile = () => {

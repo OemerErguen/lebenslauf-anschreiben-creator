@@ -35,9 +35,9 @@ export const basicsSchema = z.object({
   name: z.string(),
   label: z.string().optional(),
   image: z.string().optional(),
-  email: z.string().email().optional().or(z.literal('')),
+  email: z.email().optional().or(z.literal('')),
   phone: z.string().optional(),
-  url: z.string().url().optional().or(z.literal('')),
+  url: z.url().optional().or(z.literal('')),
   summary: z.string().optional(),
   birthDate: isoDateLikeSchema.optional(),
   birthPlace: z.string().optional(),
@@ -54,7 +54,7 @@ export const workSchema = z.object({
   id: z.string(),
   name: z.string(),
   position: z.string().optional(),
-  url: z.string().url().optional().or(z.literal('')),
+  url: z.url().optional().or(z.literal('')),
   startDate: isoDateLikeSchema.optional(),
   endDate: isoDateLikeSchema.optional(),
   currentlyWorking: z.boolean().default(false),
@@ -70,7 +70,7 @@ export type Work = z.infer<typeof workSchema>;
 export const educationSchema = z.object({
   id: z.string(),
   institution: z.string(),
-  url: z.string().url().optional().or(z.literal('')),
+  url: z.url().optional().or(z.literal('')),
   area: z.string().optional(),
   studyType: z.string().optional(),
   startDate: isoDateLikeSchema.optional(),
@@ -140,7 +140,7 @@ export const projectSchema = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string().optional(),
-  url: z.string().url().optional().or(z.literal('')),
+  url: z.url().optional().or(z.literal('')),
   startDate: isoDateLikeSchema.optional(),
   endDate: isoDateLikeSchema.optional(),
   highlights: z.array(z.string()).default([]),
@@ -156,7 +156,7 @@ export const certificateSchema = z.object({
   name: z.string(),
   date: isoDateLikeSchema.optional(),
   issuer: z.string().optional(),
-  url: z.string().url().optional().or(z.literal('')),
+  url: z.url().optional().or(z.literal('')),
 });
 /**
  *
@@ -168,7 +168,7 @@ export const publicationSchema = z.object({
   name: z.string(),
   publisher: z.string().optional(),
   releaseDate: isoDateLikeSchema.optional(),
-  url: z.string().url().optional().or(z.literal('')),
+  url: z.url().optional().or(z.literal('')),
   summary: z.string().optional(),
 });
 /**
@@ -192,7 +192,7 @@ export const volunteerSchema = z.object({
   id: z.string(),
   organization: z.string(),
   position: z.string().optional(),
-  url: z.string().url().optional().or(z.literal('')),
+  url: z.url().optional().or(z.literal('')),
   startDate: isoDateLikeSchema.optional(),
   endDate: isoDateLikeSchema.optional(),
   summary: z.string().optional(),

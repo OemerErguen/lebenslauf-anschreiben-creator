@@ -55,13 +55,13 @@ export function CoverLetterEditor() {
             { value: 'B', label: t('coverLetterEditor.formB') },
             { value: 'A', label: t('coverLetterEditor.formA') },
           ]}
-          value={cl.din5008Form ?? 'B'}
+          value={cl.din5008Form}
           onChange={(v) => {
             setDin5008Form(v);
           }}
         />
         <Toggle
-          checked={cl.showFoldMarks ?? true}
+          checked={cl.showFoldMarks}
           onChange={(checked) => {
             patchCoverLetter({ showFoldMarks: checked });
           }}
@@ -129,7 +129,7 @@ export function CoverLetterEditor() {
           {t('coverLetterEditor.recipientTitle')}
         </h3>
         <Toggle
-          checked={cl.showSenderInfo ?? true}
+          checked={cl.showSenderInfo}
           onChange={(checked) => {
             patchCoverLetter({ showSenderInfo: checked });
           }}
@@ -215,7 +215,7 @@ export function CoverLetterEditor() {
         />
         <Field
           label={t('coverLetterEditor.reference')}
-          value={cl.reference ?? ''}
+          value={cl.reference}
           placeholder={t('coverLetterEditor.referencePlaceholder')}
           onChange={(e) => {
             patchCoverLetter({ reference: e.target.value });

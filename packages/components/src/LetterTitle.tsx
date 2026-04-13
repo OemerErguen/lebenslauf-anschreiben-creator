@@ -7,8 +7,8 @@ import type { ComponentRenderProps } from '@cv/layout-engine';
  * @returns React element displaying the letter title block, or null if no name
  */
 export function LetterTitle({ options }: ComponentRenderProps) {
-  const name = (options['name'] as string) ?? '';
-  const label = (options['label'] as string) ?? '';
+  const name = (options['name'] as string | undefined) ?? '';
+  const label = (options['label'] as string | undefined) ?? '';
 
   if (!name) return null;
 

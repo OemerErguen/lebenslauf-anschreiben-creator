@@ -18,12 +18,12 @@ export function validateDesign(
   }
 
   // Hard: documentTypes must be non-empty
-  if (!def.documentTypes || def.documentTypes.length === 0) {
+  if (def.documentTypes.length === 0) {
     throw new Error(`Design "${def.id}": documentTypes must be non-empty.`);
   }
 
   // Hard: supportedLocales must be non-empty
-  if (!def.supportedLocales || def.supportedLocales.length === 0) {
+  if (def.supportedLocales.length === 0) {
     throw new Error(`Design "${def.id}": supportedLocales must be non-empty.`);
   }
 

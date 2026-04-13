@@ -15,8 +15,8 @@ export function LetterPhotoForm({ slotName, componentId }: SlotFormProps) {
   const [options, patchOptions] = useZoneComponentOptions(slotName, componentId);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const shape = (options.shape as string) ?? 'circle';
-  const image = (options.image as string) ?? '';
+  const shape = (options.shape as string | undefined) ?? 'circle';
+  const image = (options.image as string | undefined) ?? '';
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

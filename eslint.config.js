@@ -54,9 +54,6 @@ export default tseslint.config(
         { type: 'presets', pattern: 'packages/presets/**' },
         { type: 'renderer', pattern: 'packages/renderer/**' },
         { type: 'app', pattern: 'packages/app/**' },
-        // Legacy (kept for transition)
-        { type: 'template-api', pattern: 'packages/template-api/**' },
-        { type: 'templates', pattern: 'packages/templates/**' },
       ],
       'boundaries/include': ['packages/**/*'],
       react: { version: 'detect' },
@@ -66,24 +63,28 @@ export default tseslint.config(
     },
     rules: {
       // ── Boundaries: enforce one-way dependency direction ──
-      'boundaries/element-types': [
+      'boundaries/dependencies': [
         'error',
         {
           default: 'disallow',
           rules: [
-            { from: 'core', allow: [] },
-            { from: 'layout-engine', allow: ['core'] },
-            { from: 'components', allow: ['core', 'layout-engine'] },
-            { from: 'layouts', allow: ['core', 'layout-engine'] },
-            { from: 'presets', allow: ['core'] },
-            { from: 'renderer', allow: ['core'] },
+            { from: { type: 'core' }, disallow: { to: { type: '*' } } },
+            { from: { type: 'layout-engine' }, allow: { to: { type: 'core' } } },
+            { from: { type: 'components' }, allow: { to: { type: ['core', 'layout-engine'] } } },
+            { from: { type: 'layouts' }, allow: { to: { type: ['core', 'layout-engine'] } } },
+            { from: { type: 'presets' }, allow: { to: { type: 'core' } } },
+            { from: { type: 'renderer' }, allow: { to: { type: 'core' } } },
             {
-              from: 'app',
-              allow: ['core', 'layout-engine', 'components', 'layouts', 'presets', 'renderer'],
+              from: { type: 'app' },
+              allow: {
+                to: {
+                  type: ['core', 'layout-engine', 'components', 'layouts', 'presets', 'renderer'],
+                },
+              },
             },
             // Legacy
-            { from: 'template-api', allow: ['core'] },
-            { from: 'templates', allow: ['core', 'template-api'] },
+            { from: { type: 'template-api' }, allow: { to: { type: 'core' } } },
+            { from: { type: 'templates' }, allow: { to: { type: ['core', 'template-api'] } } },
           ],
         },
       ],
@@ -235,7 +236,7 @@ export default tseslint.config(
   {
     files: ['**/*.config.{js,ts,mjs,cjs}', '**/vite.config.*', '**/vitest.config.*'],
     rules: {
-      'boundaries/element-types': 'off',
+      'boundaries/dependencies': 'off',
     },
   },
   {
