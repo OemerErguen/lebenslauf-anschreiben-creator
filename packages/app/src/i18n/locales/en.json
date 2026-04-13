@@ -227,7 +227,9 @@
     "rendering": "Rendering…",
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
-    "zoomReset": "Reset zoom"
+    "zoomReset": "Reset zoom",
+    "showPreview": "Show preview",
+    "showEditor": "Show editor"
   },
   "designer": {
     "colors": "Colors",

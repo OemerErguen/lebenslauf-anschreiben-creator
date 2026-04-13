@@ -44,7 +44,7 @@ export function EducationForm(props: SlotFormProps) {
             }}
           >
             <div className="flex flex-col gap-3">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Field
                   label={t('education.degree')}
                   value={e.studyType ?? ''}
@@ -60,7 +60,7 @@ export function EducationForm(props: SlotFormProps) {
                   }}
                 />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Field
                   label={t('education.fieldOfStudy')}
                   value={e.area ?? ''}
@@ -76,7 +76,7 @@ export function EducationForm(props: SlotFormProps) {
                   }}
                 />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Field
                   label={t('education.startDate')}
                   placeholder="YYYY-MM"

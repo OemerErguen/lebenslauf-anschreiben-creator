@@ -86,7 +86,7 @@ export function CoverLetterEditor() {
             updateSenderLocation({ address: e.target.value });
           }}
         />
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <Field
             label={t('coverLetterEditor.postalCode')}
             value={sender.location?.postalCode ?? ''}
@@ -94,7 +94,7 @@ export function CoverLetterEditor() {
               updateSenderLocation({ postalCode: e.target.value });
             }}
           />
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <Field
               label={t('coverLetterEditor.city')}
               value={sender.location?.city ?? ''}
@@ -144,7 +144,7 @@ export function CoverLetterEditor() {
             updateRecipientLocation({ address: e.target.value });
           }}
         />
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <Field
             label={t('coverLetterEditor.postalCode')}
             value={cl.recipient.location?.postalCode ?? ''}
@@ -152,7 +152,7 @@ export function CoverLetterEditor() {
               updateRecipientLocation({ postalCode: e.target.value });
             }}
           />
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <Field
               label={t('coverLetterEditor.city')}
               value={cl.recipient.location?.city ?? ''}
@@ -174,7 +174,7 @@ export function CoverLetterEditor() {
 
       {/* Letter Details */}
       <LetterSection title={t('coverLetterEditor.metaTitle')}>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <Field
             label={t('coverLetterEditor.place')}
             value={cl.place ?? ''}

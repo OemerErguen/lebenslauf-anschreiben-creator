@@ -4,6 +4,7 @@ import { NATIONALITIES } from '../../../data/nationalities.js';
 import { useResumeStore } from '../../../state/resumeStore.js';
 import { useSettingsStore } from '../../../state/settingsStore.js';
 import { Field } from '../../../ui/Field.js';
+import { Select } from '../../../ui/Select.js';
 
 export function PersonalInfoForm(props: SlotFormProps) {
   void props;
@@ -20,7 +21,7 @@ export function PersonalInfoForm(props: SlotFormProps) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Field
           label={t('basics.name')}
           value={basics.name}
@@ -36,7 +37,7 @@ export function PersonalInfoForm(props: SlotFormProps) {
           }}
         />
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Field
           label={t('basics.birthDate')}
           placeholder="YYYY-MM-DD"
@@ -52,27 +53,20 @@ export function PersonalInfoForm(props: SlotFormProps) {
             update({ birthPlace: e.target.value });
           }}
         />
-        <label htmlFor="field-nationality-pi" className="flex flex-col gap-1 text-sm">
-          <span className="font-medium text-slate-700">{t('basics.nationality')}</span>
-          <select
-            id="field-nationality-pi"
-            value={basics.nationality ?? ''}
-            onChange={(e) => {
-              update({ nationality: e.target.value });
-            }}
-            className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
-          >
-            <option value="" />
-            {NATIONALITIES.map((n) => {
+        <Select
+          label={t('basics.nationality')}
+          value={basics.nationality ?? ''}
+          onChange={(e) => {
+            update({ nationality: e.target.value });
+          }}
+          options={[
+            { value: '', label: '' },
+            ...NATIONALITIES.map((n) => {
               const value = n[documentLocale];
-              return (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              );
-            })}
-          </select>
-        </label>
+              return { value, label: value };
+            }),
+          ]}
+        />
       </div>
     </div>
   );

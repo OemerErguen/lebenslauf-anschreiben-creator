@@ -30,7 +30,7 @@ export function LocationFields({ location, onChange }: LocationFieldsProps) {
           patch({ address: e.target.value });
         }}
       />
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Field
           label={t('basics.postalCode')}
           value={loc.postalCode ?? ''}
@@ -38,7 +38,7 @@ export function LocationFields({ location, onChange }: LocationFieldsProps) {
             patch({ postalCode: e.target.value });
           }}
         />
-        <div className="col-span-2">
+        <div className="sm:col-span-2">
           <Field
             label={t('basics.city')}
             value={loc.city ?? ''}
