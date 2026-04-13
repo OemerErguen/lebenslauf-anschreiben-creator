@@ -43,7 +43,12 @@ function renderSlotPage(
 
     for (const assignment of assignments) {
       const compDef = getComponent(assignment.componentId);
-      if (!compDef) continue;
+      if (!compDef) {
+        console.warn(
+          `[layout-engine] Component "${assignment.componentId}" not found in registry — skipping slot "${slotName}"`,
+        );
+        continue;
+      }
 
       const mergedOptions = { ...compDef.defaultOptions, ...assignment.options };
       const props: ComponentRenderProps = {
@@ -66,37 +71,19 @@ function renderSlotPage(
 }
 
 /**
- * Render a cover letter (anschreiben) page — fallback for designs without anschreibenConfig.
+ * Render a cover letter (anschreiben) page — fallback for designs without renderDin5008.
  * Uses a simple single-column layout with design tokens.
  * @param coverLetter
- * @param resume
- * @param tokens
- * @param locale
  * @param tokenCss
- * @param renderCoverLetterComponent
  * @returns Object containing the rendered HTML and CSS strings
  */
 function renderCoverLetterFallback(
   coverLetter: CoverLetter,
-  resume: Resume,
-  tokens: ResolvedTokens,
-  locale: Locale,
   tokenCss: string,
-  renderCoverLetterComponent?: (props: {
-    coverLetter: CoverLetter;
-    resume: Resume;
-    tokens: ResolvedTokens;
-    locale: Locale;
-  }) => string,
 ): { html: string; css: string } {
   const css = tokenCss;
 
-  if (renderCoverLetterComponent) {
-    const html = renderCoverLetterComponent({ coverLetter, resume, tokens, locale });
-    return { html, css };
-  }
-
-  // Fallback: simple text-based cover letter
+  // Simple text-based cover letter
   const paragraphsHtml = coverLetter.paragraphs
     .map((p) => `<p class="cv-cl-paragraph">${p}</p>`)
     .join('');
@@ -137,70 +124,23 @@ export interface RenderDesignPageOptions {
         footerHtml?: string | undefined;
       }) => string)
     | undefined;
-  /** @deprecated Use renderDin5008 instead. */
-  renderCoverLetter?:
-    | ((props: {
-        coverLetter: CoverLetter;
-        resume: Resume;
-        tokens: ResolvedTokens;
-        locale: Locale;
-      }) => string)
-    | undefined;
 }
 
-export function renderDesignPage(opts: RenderDesignPageOptions): { html: string; css: string };
-export function renderDesignPage(
-  resume: Resume,
-  design: DesignDefinition,
-  overrides: UserOverrides,
-  locale: Locale,
-  documentType?: DocumentType,
-): { html: string; css: string };
 /**
  *
- * @param resumeOrOpts
- * @param designOrUndef
- * @param overridesOrUndef
- * @param localeOrUndef
- * @param documentTypeOrUndef
+ * @param opts
  * @returns Object containing the rendered HTML and CSS strings
  */
-export function renderDesignPage(
-  resumeOrOpts: Resume | RenderDesignPageOptions,
-  designOrUndef?: DesignDefinition,
-  overridesOrUndef?: UserOverrides,
-  localeOrUndef?: Locale,
-  documentTypeOrUndef?: DocumentType,
-): { html: string; css: string } {
-  // Normalize arguments
-  let resume: Resume;
-  let design: DesignDefinition;
-  let overrides: UserOverrides;
-  let locale: Locale;
-  let documentType: DocumentType;
-  let coverLetter: CoverLetter | undefined;
-  let renderDin5008: RenderDesignPageOptions['renderDin5008'] | undefined;
-  let renderCoverLetter: RenderDesignPageOptions['renderCoverLetter'] | undefined;
-
-  if ('design' in resumeOrOpts) {
-    const o = resumeOrOpts;
-    resume = o.resume;
-    design = o.design;
-    overrides = o.overrides;
-    locale = o.locale;
-    documentType = o.documentType ?? 'lebenslauf';
-    coverLetter = o.coverLetter;
-    renderDin5008 = o.renderDin5008;
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    renderCoverLetter = o.renderCoverLetter;
-  } else {
-    resume = resumeOrOpts;
-    // Positional overload guarantees these are defined
-    design = designOrUndef as DesignDefinition;
-    overrides = overridesOrUndef as UserOverrides;
-    locale = localeOrUndef as Locale;
-    documentType = documentTypeOrUndef ?? 'lebenslauf';
-  }
+export function renderDesignPage(opts: RenderDesignPageOptions): { html: string; css: string } {
+  const {
+    resume,
+    design,
+    overrides,
+    locale,
+    documentType = 'lebenslauf',
+    coverLetter,
+    renderDin5008,
+  } = opts;
 
   const tokens = resolveTokens(design, overrides);
   const slotOptions = resolveAllSlotOptions(design, overrides);
@@ -208,21 +148,12 @@ export function renderDesignPage(
   const tokenCss = designTokensToCss(design, tokens);
 
   if (documentType === 'anschreiben' && coverLetter) {
-    // DIN 5008 rendering (preferred path)
     if (renderDin5008) {
       const config = design.anschreibenConfig ?? {};
       const html = renderDin5008({ coverLetter, resume, tokens, locale, config });
       return { html, css: tokenCss };
     }
-    // Fallback: simple single-column rendering
-    return renderCoverLetterFallback(
-      coverLetter,
-      resume,
-      tokens,
-      locale,
-      tokenCss,
-      renderCoverLetter,
-    );
+    return renderCoverLetterFallback(coverLetter, tokenCss);
   }
 
   return renderSlotPage(resume, design, tokens, overrides, locale, layoutCss, tokenCss);

@@ -1,4 +1,5 @@
 import type { ComponentRenderProps } from '@cv/layout-engine';
+import { optStr } from './optionUtils.js';
 
 /**
  * Compact photo for DIN 5008 letter header/footer.
@@ -7,9 +8,9 @@ import type { ComponentRenderProps } from '@cv/layout-engine';
  * @returns React element displaying the letter photo, or null if no image
  */
 export function LetterPhoto({ options }: ComponentRenderProps) {
-  const shape = (options['shape'] as string | undefined) ?? 'circle';
-  const image = (options['image'] as string | undefined) ?? '';
-  const name = (options['name'] as string | undefined) ?? '';
+  const shape = optStr(options, 'shape', 'circle');
+  const image = optStr(options, 'image', '');
+  const name = optStr(options, 'name', '');
 
   if (!image) return null;
 

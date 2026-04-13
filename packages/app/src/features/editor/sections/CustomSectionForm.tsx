@@ -5,17 +5,14 @@ import { useResumeStore } from '../../../state/resumeStore.js';
 import { Button } from '../../../ui/Button.js';
 import { Field } from '../../../ui/Field.js';
 import { RichTextField } from '../../../ui/RichTextField.js';
-
-function uid(prefix: string) {
-  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-}
+import { generateId } from '../../../utils/generateId.js';
 
 function emptySection(): CustomSection {
-  return { id: uid('custom'), title: '', items: [] };
+  return { id: generateId('custom'), title: '', items: [] };
 }
 
 function emptyItem() {
-  return { id: uid('item'), heading: '', body: '' };
+  return { id: generateId('item'), heading: '', body: '' };
 }
 
 export function CustomSectionForm(props: SlotFormProps) {

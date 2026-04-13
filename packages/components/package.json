@@ -17,10 +17,12 @@
   "dependencies": {
     "@cv/core": "workspace:*",
     "@cv/layout-engine": "workspace:*",
+    "dompurify": "^3.3.3",
     "react": "latest",
     "zod": "latest"
   },
   "devDependencies": {
+    "@types/dompurify": "^3.2.0",
     "@types/react": "latest",
     "typescript": "latest",
     "vitest": "latest"

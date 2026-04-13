@@ -1,6 +1,7 @@
 import type { LabelKey } from './labels.js';
 import type { ComponentRenderProps } from '@cv/layout-engine';
 import { getLabel } from './labels.js';
+import { optStr } from './optionUtils.js';
 
 /**
  *
@@ -13,7 +14,7 @@ export function LanguagesList({ resume, locale, tokens }: ComponentRenderProps) 
   return (
     <section className="cv-section">
       <h2
-        className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string | undefined) ?? 'uppercase-spaced'}`}
+        className={`cv-section-title cv-section-title--${optStr(tokens.options, 'sectionTitleStyle', 'uppercase-spaced')}`}
       >
         {getLabel(locale, 'languages')}
       </h2>

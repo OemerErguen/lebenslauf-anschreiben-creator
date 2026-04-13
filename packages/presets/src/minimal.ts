@@ -1,19 +1,11 @@
-import type { Preset } from '@cv/core';
+import { createPreset } from './createPreset.js';
 
-export const minimalPreset: Preset = {
+export const minimalPreset = createPreset({
   id: 'minimal',
   name: { de: 'Minimal', en: 'Minimal' },
   description: {
     de: 'Minimalistisches einseitiges Layout ohne Seitenleiste',
     en: 'Minimalist single-column layout without sidebar',
   },
-  thumbnail: '',
   designId: 'full-width',
-  overrides: {
-    colors: {},
-    fonts: {},
-    options: {},
-    slotOptions: {},
-    slotAssignments: {},
-  },
-};
+});

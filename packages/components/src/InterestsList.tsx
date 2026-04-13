@@ -1,5 +1,6 @@
 import type { ComponentRenderProps } from '@cv/layout-engine';
 import { getLabel } from './labels.js';
+import { optStr } from './optionUtils.js';
 
 /**
  *
@@ -7,14 +8,14 @@ import { getLabel } from './labels.js';
  * @returns React element displaying the interests list, or null if empty
  */
 export function InterestsList({ resume, locale, tokens, options }: ComponentRenderProps) {
-  const layout = (options['layout'] as string | undefined) ?? 'list';
+  const layout = optStr(options, 'layout', 'list');
 
   if (resume.interests.length === 0) return null;
 
   return (
     <section className="cv-section">
       <h2
-        className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string | undefined) ?? 'uppercase-spaced'}`}
+        className={`cv-section-title cv-section-title--${optStr(tokens.options, 'sectionTitleStyle', 'uppercase-spaced')}`}
       >
         {getLabel(locale, 'interests')}
       </h2>

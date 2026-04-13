@@ -1,4 +1,5 @@
 import type { ComponentRenderProps } from '@cv/layout-engine';
+import { optStr } from './optionUtils.js';
 
 /**
  * Compact name + job title block for DIN 5008 letter header.
@@ -7,8 +8,8 @@ import type { ComponentRenderProps } from '@cv/layout-engine';
  * @returns React element displaying the letter title block, or null if no name
  */
 export function LetterTitle({ options }: ComponentRenderProps) {
-  const name = (options['name'] as string | undefined) ?? '';
-  const label = (options['label'] as string | undefined) ?? '';
+  const name = optStr(options, 'name', '');
+  const label = optStr(options, 'label', '');
 
   if (!name) return null;
 

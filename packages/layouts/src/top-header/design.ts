@@ -1,4 +1,11 @@
-import { defineDesign, STANDARD_FONT_OPTIONS } from '@cv/layout-engine';
+import {
+  COMMON_COLOR_TOKENS,
+  defineDesign,
+  SECTION_TITLE_STYLE_VALUES,
+  STANDARD_FONT_OPTIONS,
+  STANDARD_SPACING_SCALE,
+  TIMELINE_STYLE_VALUES,
+} from '@cv/layout-engine';
 
 export const topHeaderDesign = defineDesign({
   id: 'top-header',
@@ -31,19 +38,9 @@ export const topHeaderDesign = defineDesign({
       default: '#f8fafc',
       cssVar: '--cv-sidebar-bg',
     },
-    { key: 'text', label: { de: 'Text', en: 'Text' }, default: '#1b1f23', cssVar: '--cv-text' },
-    {
-      key: 'muted',
-      label: { de: 'Gedämpft', en: 'Muted' },
-      default: '#55606b',
-      cssVar: '--cv-muted',
-    },
-    {
-      key: 'border',
-      label: { de: 'Rahmen', en: 'Border' },
-      default: '#d0d7de',
-      cssVar: '--cv-border',
-    },
+    COMMON_COLOR_TOKENS.text,
+    COMMON_COLOR_TOKENS.muted,
+    COMMON_COLOR_TOKENS.border,
   ],
 
   fonts: [
@@ -63,38 +60,21 @@ export const topHeaderDesign = defineDesign({
     },
   ],
 
-  spacing: {
-    options: ['compact', 'normal', 'spacious'],
-    default: 'normal',
-    scale: {
-      compact: { section: '4mm', entry: '2mm', gap: '5mm' },
-      normal: { section: '7mm', entry: '3mm', gap: '7mm' },
-      spacious: { section: '10mm', entry: '5mm', gap: '9mm' },
-    },
-  },
+  spacing: STANDARD_SPACING_SCALE,
 
   options: {
     sectionTitleStyle: {
       type: 'enum',
       key: 'sectionTitleStyle',
       label: { de: 'Titelstil', en: 'Title style' },
-      values: [
-        { value: 'accent-underline', label: { de: 'Akzent-Unterstrich', en: 'Accent underline' } },
-        { value: 'uppercase-spaced', label: { de: 'GROSSBUCHSTABEN', en: 'UPPERCASE' } },
-        { value: 'normal', label: { de: 'Normal', en: 'Normal' } },
-        { value: 'accent-bar', label: { de: 'Akzent-Balken', en: 'Accent bar' } },
-      ],
+      values: SECTION_TITLE_STYLE_VALUES,
       default: 'accent-underline',
     },
     timelineStyle: {
       type: 'enum',
       key: 'timelineStyle',
       label: { de: 'Timeline-Stil', en: 'Timeline style' },
-      values: [
-        { value: 'plain', label: { de: 'Schlicht', en: 'Plain' } },
-        { value: 'line', label: { de: 'Linie & Punkte', en: 'Line & dots' } },
-        { value: 'accent', label: { de: 'Akzentlinie', en: 'Accent line' } },
-      ],
+      values: TIMELINE_STYLE_VALUES,
       default: 'accent',
     },
   },

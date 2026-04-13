@@ -6,22 +6,19 @@ import { Button } from '../../../ui/Button.js';
 import { Field } from '../../../ui/Field.js';
 import { LevelInput } from '../../../ui/LevelInput.js';
 import { ToggleGroup } from '../../../ui/ToggleGroup.js';
+import { generateId } from '../../../utils/generateId.js';
 import { useSlotComponentOption } from '../useSlotComponentOption.js';
 
-function uid(prefix: string) {
-  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-}
-
 function emptyFlatSkill(): Skill {
-  return { id: uid('skill'), name: '', level: 40, keywords: [], children: [] };
+  return { id: generateId('skill'), name: '', level: 40, keywords: [], children: [] };
 }
 
 function emptyGroup(): Skill {
-  return { id: uid('skill'), name: '', keywords: [], children: [emptyChild()] };
+  return { id: generateId('skill'), name: '', keywords: [], children: [emptyChild()] };
 }
 
 function emptyChild(): SkillChild {
-  return { id: uid('sc'), name: '', level: 40 };
+  return { id: generateId('sc'), name: '', level: 40 };
 }
 
 function isGroup(s: Skill): boolean {

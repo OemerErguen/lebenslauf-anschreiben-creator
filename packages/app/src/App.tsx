@@ -5,9 +5,7 @@ import { ResumeEditor } from './features/editor/ResumeEditor.js';
 import { IoButtons } from './features/io/IoButtons.js';
 import { triggerPreviewPrint } from './features/preview/previewController.js';
 import { PreviewPane } from './features/preview/PreviewPane.js';
-import { useCoverLetterStore } from './state/coverLetterStore.js';
-import { useDesignStore } from './state/designStore.js';
-import { useResumeStore } from './state/resumeStore.js';
+import { clearAllStores } from './state/clearAllStores.js';
 import { useSettingsStore } from './state/settingsStore.js';
 
 export function App() {
@@ -25,73 +23,7 @@ export function App() {
   };
 
   const handleClearAll = () => {
-    // Set all stores to truly empty state
-    useResumeStore.getState().setResume({
-      basics: { name: '', profiles: [] },
-      work: [],
-      education: [],
-      skills: [],
-      languages: [],
-      projects: [],
-      certificates: [],
-      publications: [],
-      awards: [],
-      volunteer: [],
-      interests: [],
-      references: [],
-      custom: [],
-    });
-
-    useCoverLetterStore.getState().setCoverLetter({
-      sender: { name: '' },
-      recipient: { name: '' },
-      subject: '',
-      reference: '',
-      salutation: '',
-      paragraphs: [],
-      closing: '',
-      din5008Form: 'B',
-      showFoldMarks: true,
-      showSenderInfo: true,
-    });
-
-    useDesignStore.getState().applyDesign('sidebar-left');
-
-    useSettingsStore.getState().setSettings({
-      uiLocale: useSettingsStore.getState().settings.uiLocale,
-      documentLocale: 'de',
-      selectedTemplateId: 'classic-de',
-      templateOptions: {},
-      sectionOrder: [
-        'personal',
-        'summary',
-        'experience',
-        'education',
-        'skills',
-        'languages',
-        'projects',
-        'certificates',
-        'interests',
-      ],
-      sectionVisibility: {
-        personal: false,
-        summary: false,
-        experience: false,
-        education: false,
-        skills: false,
-        languages: false,
-        projects: false,
-        certificates: false,
-        publications: false,
-        awards: false,
-        volunteer: false,
-        interests: false,
-        references: false,
-        custom: false,
-      },
-      paperSize: 'A4',
-    });
-
+    clearAllStores();
     setClearDialogOpen(false);
   };
 

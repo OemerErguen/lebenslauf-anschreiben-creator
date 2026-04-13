@@ -1,6 +1,7 @@
 import type { ComponentRenderProps } from '@cv/layout-engine';
 import { formatIsoDate } from './format.js';
 import { getLabel } from './labels.js';
+import { optStr } from './optionUtils.js';
 
 /**
  *
@@ -16,7 +17,7 @@ export function CertificatesList({ resume, locale, tokens, slot }: ComponentRend
   return (
     <section className={sectionCls}>
       <h2
-        className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string | undefined) ?? 'uppercase-spaced'}`}
+        className={`cv-section-title cv-section-title--${optStr(tokens.options, 'sectionTitleStyle', 'uppercase-spaced')}`}
       >
         {getLabel(locale, 'certificates')}
       </h2>

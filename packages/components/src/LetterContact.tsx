@@ -1,5 +1,6 @@
 import type { ComponentRenderProps } from '@cv/layout-engine';
 import { getContactIcon } from './contactIcons.js';
+import { optArray, optStr } from './optionUtils.js';
 
 interface LetterProfile {
   network: string;
@@ -15,11 +16,11 @@ interface LetterProfile {
  * @returns React element displaying the letter contact strip, or null if empty
  */
 export function LetterContact({ options, slot }: ComponentRenderProps) {
-  const email = (options['email'] as string | undefined) ?? '';
-  const phone = (options['phone'] as string | undefined) ?? '';
-  const url = (options['url'] as string | undefined) ?? '';
-  const city = (options['city'] as string | undefined) ?? '';
-  const profiles = (options['profiles'] as LetterProfile[] | undefined) ?? [];
+  const email = optStr(options, 'email', '');
+  const phone = optStr(options, 'phone', '');
+  const url = optStr(options, 'url', '');
+  const city = optStr(options, 'city', '');
+  const profiles = optArray<LetterProfile>(options, 'profiles', []);
 
   const items: { key: string; network: string; value: string; href?: string | undefined }[] = [];
 

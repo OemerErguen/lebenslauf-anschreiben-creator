@@ -4,6 +4,7 @@ import { NATIONALITIES } from '../../../data/nationalities.js';
 import { useResumeStore } from '../../../state/resumeStore.js';
 import { useSettingsStore } from '../../../state/settingsStore.js';
 import { Field } from '../../../ui/Field.js';
+import { LocationFields } from '../../../ui/LocationFields.js';
 import { isValidImageFile, processPhotoFile } from '../../../utils/imageUtils.js';
 
 export function BasicsForm() {
@@ -140,37 +141,10 @@ export function BasicsForm() {
       />
 
       {/* Row 5: Address */}
-      <Field
-        label={t('basics.address')}
-        value={basics.location?.address ?? ''}
-        onChange={(e) => {
-          update({ location: { ...basics.location, address: e.target.value } });
-        }}
-      />
-      <div className="grid grid-cols-3 gap-3">
-        <Field
-          label={t('basics.postalCode')}
-          value={basics.location?.postalCode ?? ''}
-          onChange={(e) => {
-            update({ location: { ...basics.location, postalCode: e.target.value } });
-          }}
-        />
-        <div className="col-span-2">
-          <Field
-            label={t('basics.city')}
-            value={basics.location?.city ?? ''}
-            onChange={(e) => {
-              update({ location: { ...basics.location, city: e.target.value } });
-            }}
-          />
-        </div>
-      </div>
-      <Field
-        label={t('basics.countryCode')}
-        value={basics.location?.countryCode ?? ''}
-        placeholder="DE"
-        onChange={(e) => {
-          update({ location: { ...basics.location, countryCode: e.target.value } });
+      <LocationFields
+        location={basics.location}
+        onChange={(location) => {
+          update({ location });
         }}
       />
 

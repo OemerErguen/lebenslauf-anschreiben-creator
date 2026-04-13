@@ -1,13 +1,25 @@
+import DOMPurify from 'dompurify';
+
+const PURIFY_CONFIG = {
+  ALLOWED_TAGS: [
+    'p', 'br', 'strong', 'b', 'em', 'i', 'u', 's',
+    'ul', 'ol', 'li', 'a', 'span', 'sub', 'sup',
+    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    'blockquote', 'code', 'pre', 'hr', 'div',
+  ],
+  ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
+  RETURN_TRUSTED_TYPE: false as const,
+};
+
 /**
- * Normalizes a summary string for dangerouslySetInnerHTML rendering.
+ * Sanitizes and normalizes a string for dangerouslySetInnerHTML rendering.
  * Wraps plain text (non-HTML) in <p> tags so line breaks work correctly.
+ * All HTML is sanitized via DOMPurify to prevent XSS.
  * @param value
- * @returns HTML string, with plain text wrapped in a p tag
+ * @returns Sanitized HTML string
  */
 export function toHtml(value: string | undefined): string {
   if (!value) return '';
-  // If already HTML (starts with a tag), use as-is
-  if (value.trimStart().startsWith('<')) return value;
-  // Wrap plain text in <p>
-  return `<p>${value}</p>`;
+  const raw = value.trimStart().startsWith('<') ? value : `<p>${value}</p>`;
+  return DOMPurify.sanitize(raw, PURIFY_CONFIG);
 }

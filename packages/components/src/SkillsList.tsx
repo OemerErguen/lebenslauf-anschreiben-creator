@@ -1,6 +1,7 @@
 import type { Locale, Skill, SkillChild } from '@cv/core';
 import type { ComponentRenderProps } from '@cv/layout-engine';
 import { getLabel } from './labels.js';
+import { optNum, optStr } from './optionUtils.js';
 
 const LEVEL_KEYS: { threshold: number; key: string }[] = [
   { threshold: 14, key: 'level_beginner' },
@@ -54,35 +55,11 @@ function LevelIndicator({
         </div>
       );
     }
-    case 'stars': {
-      const count = getStarCount(level);
-      const filled = '\u2605';
-      const empty = '\u2606';
-      return (
-        <span className="cv-skill-visual-icons">
-          {Array.from({ length: 5 }, (_, i) => {
-            const pos = i + 1;
-            if (pos <= count) return <span key={i}>{filled}</span>;
-            if (pos - 0.5 <= count)
-              return (
-                <span key={i} className="cv-icon-half">
-                  <span className="cv-icon-half-filled">{filled}</span>
-                  <span className="cv-icon-half-empty">{empty}</span>
-                </span>
-              );
-            return (
-              <span key={i} className="cv-empty">
-                {empty}
-              </span>
-            );
-          })}
-        </span>
-      );
-    }
+    case 'stars':
     case 'dots': {
       const count = getStarCount(level);
-      const filled = '\u25CF';
-      const empty = '\u25CB';
+      const filled = displayMode === 'stars' ? '\u2605' : '\u25CF';
+      const empty = displayMode === 'stars' ? '\u2606' : '\u25CB';
       return (
         <span className="cv-skill-visual-icons">
           {Array.from({ length: 5 }, (_, i) => {
@@ -241,8 +218,8 @@ function GroupCard({
  * @returns React element displaying the skills section, or null if empty
  */
 export function SkillsList({ resume, locale, tokens, options, slot }: ComponentRenderProps) {
-  const displayMode = (options['displayMode'] as string | undefined) ?? 'text';
-  const explicitColumns = options['columns'] as number | undefined;
+  const displayMode = optStr(options, 'displayMode', 'text');
+  const explicitColumns = optNum(options, 'columns');
 
   if (resume.skills.length === 0) return null;
 
@@ -270,7 +247,7 @@ export function SkillsList({ resume, locale, tokens, options, slot }: ComponentR
   return (
     <section className="cv-section">
       <h2
-        className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string | undefined) ?? 'uppercase-spaced'}`}
+        className={`cv-section-title cv-section-title--${optStr(tokens.options, 'sectionTitleStyle', 'uppercase-spaced')}`}
       >
         {getLabel(locale, 'skills')}
       </h2>

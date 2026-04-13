@@ -1,19 +1,14 @@
-import type { Preset } from '@cv/core';
+import { createPreset } from './createPreset.js';
 
-export const classicInternationalPreset: Preset = {
+export const classicInternationalPreset = createPreset({
   id: 'classic-international',
   name: { de: 'Klassisch International', en: 'Classic International' },
   description: {
     de: 'Internationales CV-Layout — ohne Geburtsdaten und Nationalität',
     en: 'International CV layout — without birth details and nationality',
   },
-  thumbnail: '',
   designId: 'sidebar-left',
   overrides: {
-    colors: {},
-    fonts: {},
-    options: {},
-    slotOptions: {},
     slotAssignments: {
       sidebar: [
         { componentId: 'photo', options: { shape: 'rounded', size: 'md' } },
@@ -29,4 +24,4 @@ export const classicInternationalPreset: Preset = {
       ],
     },
   },
-};
+});

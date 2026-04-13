@@ -3,14 +3,16 @@ import type { Language } from '@cv/core';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../../ui/Button.js';
 import { Field } from '../../../ui/Field.js';
+import { ListFormHeader } from '../../../ui/ListFormHeader.js';
 import { Select } from '../../../ui/Select.js';
+import { generateId } from '../../../utils/generateId.js';
 import { useListSection } from '../useListSection.js';
 
 const FLUENCY_LEVELS = ['a1', 'a2', 'b1', 'b2', 'c1', 'c2', 'native'] as const;
 
 function emptyLanguage(): Language {
   return {
-    id: `lang-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    id: generateId('lang'),
     language: '',
     fluency: 'b1',
   };
@@ -28,23 +30,7 @@ export function LanguagesForm(props: SlotFormProps) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-slate-500">
-          {items.length}{' '}
-          {items.length === 1
-            ? t('editor.entry', { defaultValue: 'entry' })
-            : t('editor.entries', { defaultValue: 'entries' })}
-        </span>
-        <Button variant="secondary" size="sm" onClick={add}>
-          + {t('actions.add')}
-        </Button>
-      </div>
-
-      {items.length === 0 && (
-        <div className="py-6 text-center text-sm text-slate-400">
-          {t('editor.noEntries', { defaultValue: 'No entries yet.' })}
-        </div>
-      )}
+      <ListFormHeader count={items.length} onAdd={add} />
 
       <div className="flex flex-col gap-2">
         {items.map((l) => (

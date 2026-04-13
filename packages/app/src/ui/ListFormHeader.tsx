@@ -1,0 +1,33 @@
+import { useTranslation } from 'react-i18next';
+import { Button } from './Button.js';
+
+interface ListFormHeaderProps {
+  count: number;
+  onAdd: () => void;
+}
+
+export function ListFormHeader({ count, onAdd }: ListFormHeaderProps) {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-medium text-slate-500">
+          {count}{' '}
+          {count === 1
+            ? t('editor.entry', { defaultValue: 'entry' })
+            : t('editor.entries', { defaultValue: 'entries' })}
+        </span>
+        <Button variant="secondary" size="sm" onClick={onAdd}>
+          + {t('actions.add')}
+        </Button>
+      </div>
+
+      {count === 0 && (
+        <div className="py-6 text-center text-sm text-slate-400">
+          {t('editor.noEntries', { defaultValue: 'No entries yet.' })}
+        </div>
+      )}
+    </>
+  );
+}

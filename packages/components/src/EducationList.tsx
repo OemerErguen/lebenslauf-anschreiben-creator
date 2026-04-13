@@ -1,6 +1,7 @@
 import type { ComponentRenderProps } from '@cv/layout-engine';
 import { formatDateRange } from './format.js';
 import { getLabel } from './labels.js';
+import { optStr } from './optionUtils.js';
 import { toHtml } from './renderHtml.js';
 
 /**
@@ -11,7 +12,7 @@ import { toHtml } from './renderHtml.js';
 export function EducationList({ resume, locale, tokens }: ComponentRenderProps) {
   if (resume.education.length === 0) return null;
 
-  const timelineStyle = (tokens.options['timelineStyle'] as string | undefined) ?? 'plain';
+  const timelineStyle = optStr(tokens.options, 'timelineStyle', 'plain');
 
   const entries = resume.education.map((e) => (
     <article key={e.id} className="cv-entry">
@@ -37,7 +38,7 @@ export function EducationList({ resume, locale, tokens }: ComponentRenderProps) 
   return (
     <section className="cv-section cv-main-section">
       <h2
-        className={`cv-section-title cv-section-title--${(tokens.options['sectionTitleStyle'] as string | undefined) ?? 'uppercase-spaced'}`}
+        className={`cv-section-title cv-section-title--${optStr(tokens.options, 'sectionTitleStyle', 'uppercase-spaced')}`}
       >
         {getLabel(locale, 'education')}
       </h2>

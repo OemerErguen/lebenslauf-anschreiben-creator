@@ -1,15 +1,16 @@
 import type { SlotFormProps } from '../formRegistry.js';
 import type { Certificate } from '@cv/core';
 import { useTranslation } from 'react-i18next';
-import { Button } from '../../../ui/Button.js';
 import { Field } from '../../../ui/Field.js';
+import { ListFormHeader } from '../../../ui/ListFormHeader.js';
 import { ListItemCard } from '../../../ui/ListItemCard.js';
+import { generateId } from '../../../utils/generateId.js';
 import { SECTION_BY_ID } from '../sectionConfig.js';
 import { useListSection } from '../useListSection.js';
 
 function emptyCertificate(): Certificate {
   return {
-    id: `cert-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    id: generateId('cert'),
     name: '',
     issuer: '',
     date: '',
@@ -29,23 +30,7 @@ export function CertificatesForm(props: SlotFormProps) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-slate-500">
-          {items.length}{' '}
-          {items.length === 1
-            ? t('editor.entry', { defaultValue: 'entry' })
-            : t('editor.entries', { defaultValue: 'entries' })}
-        </span>
-        <Button variant="secondary" size="sm" onClick={add}>
-          + {t('actions.add')}
-        </Button>
-      </div>
-
-      {items.length === 0 && (
-        <div className="py-6 text-center text-sm text-slate-400">
-          {t('editor.noEntries', { defaultValue: 'No entries yet.' })}
-        </div>
-      )}
+      <ListFormHeader count={items.length} onAdd={add} />
 
       <div className="flex flex-col">
         {items.map((c) => (

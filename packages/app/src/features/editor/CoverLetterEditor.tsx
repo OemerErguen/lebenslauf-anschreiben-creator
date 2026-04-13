@@ -3,11 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { useCoverLetterStore } from '../../state/coverLetterStore.js';
 import { Button } from '../../ui/Button.js';
 import { Field } from '../../ui/Field.js';
-import { RichTextField } from '../../ui/RichTextField.js';
 import { SignaturePad } from '../../ui/SignaturePad.js';
 import { Toggle } from '../../ui/Toggle.js';
 import { ToggleGroup } from '../../ui/ToggleGroup.js';
 import { isValidImageFile, processSignatureFile } from '../../utils/imageUtils.js';
+import { LetterSection } from './cover-letter/LetterSection.js';
+import { ParagraphList } from './cover-letter/ParagraphList.js';
 
 export function CoverLetterEditor() {
   const { t } = useTranslation();
@@ -15,10 +16,6 @@ export function CoverLetterEditor() {
   const patchCoverLetter = useCoverLetterStore((s) => s.patchCoverLetter);
   const patchRecipient = useCoverLetterStore((s) => s.patchRecipient);
   const patchSender = useCoverLetterStore((s) => s.patchSender);
-  const addParagraph = useCoverLetterStore((s) => s.addParagraph);
-  const removeParagraph = useCoverLetterStore((s) => s.removeParagraph);
-  const updateParagraph = useCoverLetterStore((s) => s.updateParagraph);
-  const moveParagraph = useCoverLetterStore((s) => s.moveParagraph);
   const setDin5008Form = useCoverLetterStore((s) => s.setDin5008Form);
   const signatureInputRef = useRef<HTMLInputElement>(null);
 
@@ -45,11 +42,8 @@ export function CoverLetterEditor() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* ── DIN 5008 Settings ── */}
-      <section className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-        <h3 className="text-base font-semibold text-slate-900">
-          {t('coverLetterEditor.din5008Form')}
-        </h3>
+      {/* DIN 5008 Settings */}
+      <LetterSection title={t('coverLetterEditor.din5008Form')}>
         <ToggleGroup
           options={[
             { value: 'B', label: t('coverLetterEditor.formB') },
@@ -67,13 +61,10 @@ export function CoverLetterEditor() {
           }}
           label={t('coverLetterEditor.showFoldMarks')}
         />
-      </section>
+      </LetterSection>
 
-      {/* ── Sender (postal address only) ── */}
-      <section className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-        <h3 className="text-base font-semibold text-slate-900">
-          {t('coverLetterEditor.senderTitle')}
-        </h3>
+      {/* Sender */}
+      <LetterSection title={t('coverLetterEditor.senderTitle')}>
         <Field
           label={t('coverLetterEditor.name')}
           value={sender.name}
@@ -121,13 +112,10 @@ export function CoverLetterEditor() {
             updateSenderLocation({ countryCode: e.target.value });
           }}
         />
-      </section>
+      </LetterSection>
 
-      {/* ── Recipient ── */}
-      <section className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-        <h3 className="text-base font-semibold text-slate-900">
-          {t('coverLetterEditor.recipientTitle')}
-        </h3>
+      {/* Recipient */}
+      <LetterSection title={t('coverLetterEditor.recipientTitle')}>
         <Toggle
           checked={cl.showSenderInfo}
           onChange={(checked) => {
@@ -182,13 +170,10 @@ export function CoverLetterEditor() {
             updateRecipientLocation({ countryCode: e.target.value });
           }}
         />
-      </section>
+      </LetterSection>
 
-      {/* ── Letter Details ── */}
-      <section className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-        <h3 className="text-base font-semibold text-slate-900">
-          {t('coverLetterEditor.metaTitle')}
-        </h3>
+      {/* Letter Details */}
+      <LetterSection title={t('coverLetterEditor.metaTitle')}>
         <div className="grid grid-cols-2 gap-3">
           <Field
             label={t('coverLetterEditor.place')}
@@ -221,13 +206,10 @@ export function CoverLetterEditor() {
             patchCoverLetter({ reference: e.target.value });
           }}
         />
-      </section>
+      </LetterSection>
 
-      {/* ── Body ── */}
-      <section className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-        <h3 className="text-base font-semibold text-slate-900">
-          {t('coverLetterEditor.bodyTitle')}
-        </h3>
+      {/* Body */}
+      <LetterSection title={t('coverLetterEditor.bodyTitle')}>
         <Field
           label={t('coverLetterEditor.salutation')}
           value={cl.salutation}
@@ -236,94 +218,11 @@ export function CoverLetterEditor() {
             patchCoverLetter({ salutation: e.target.value });
           }}
         />
+        <ParagraphList />
+      </LetterSection>
 
-        <div className="flex flex-col gap-3">
-          <span className="text-sm font-medium text-slate-700">
-            {t('coverLetterEditor.paragraphs')}
-          </span>
-          {cl.paragraphs.map((p, i) => (
-            <div key={i} className="flex flex-col gap-1">
-              <div className="flex items-center justify-end gap-1">
-                <button
-                  type="button"
-                  disabled={i === 0}
-                  onClick={() => {
-                    moveParagraph(i, i - 1);
-                  }}
-                  className="rounded p-0.5 text-slate-400 hover:text-slate-600 disabled:opacity-30"
-                  title={t('designer.moveUp')}
-                >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  >
-                    <path d="M3 8.5l4-4 4 4" />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  disabled={i === cl.paragraphs.length - 1}
-                  onClick={() => {
-                    moveParagraph(i, i + 1);
-                  }}
-                  className="rounded p-0.5 text-slate-400 hover:text-slate-600 disabled:opacity-30"
-                  title={t('designer.moveDown')}
-                >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  >
-                    <path d="M3 5.5l4 4 4-4" />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    removeParagraph(i);
-                  }}
-                  className="rounded p-0.5 text-slate-400 hover:text-red-500"
-                  title={t('coverLetterEditor.removeParagraph')}
-                >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  >
-                    <path d="M3 3l8 8M11 3l-8 8" />
-                  </svg>
-                </button>
-              </div>
-              <RichTextField
-                label={`${i + 1}.`}
-                value={p}
-                onChange={(html) => {
-                  updateParagraph(i, html);
-                }}
-              />
-            </div>
-          ))}
-          <Button variant="secondary" size="sm" onClick={addParagraph}>
-            {t('coverLetterEditor.addParagraph')}
-          </Button>
-        </div>
-      </section>
-
-      {/* ── Closing & Signature ── */}
-      <section className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-        <h3 className="text-base font-semibold text-slate-900">
-          {t('coverLetterEditor.closingTitle')}
-        </h3>
+      {/* Closing & Signature */}
+      <LetterSection title={t('coverLetterEditor.closingTitle')}>
         <Field
           label={t('coverLetterEditor.closing')}
           value={cl.closing}
@@ -373,7 +272,7 @@ export function CoverLetterEditor() {
             />
           )}
         </div>
-      </section>
+      </LetterSection>
     </div>
   );
 }

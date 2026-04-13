@@ -1,5 +1,6 @@
 import type { ComponentRenderProps } from '@cv/layout-engine';
 import { getLabel } from './labels.js';
+import { optStrArray } from './optionUtils.js';
 
 const ALL_FIELDS = ['name', 'label', 'birthDate', 'birthPlace', 'nationality'] as const;
 
@@ -9,7 +10,7 @@ const ALL_FIELDS = ['name', 'label', 'birthDate', 'birthPlace', 'nationality'] a
  * @returns React element displaying personal information
  */
 export function PersonalInfo({ resume, locale, options }: ComponentRenderProps) {
-  const showFields = (options['showFields'] as string[] | undefined) ?? [...ALL_FIELDS];
+  const showFields = optStrArray(options, 'showFields', [...ALL_FIELDS]);
   const { basics } = resume;
 
   const showName = showFields.includes('name');
