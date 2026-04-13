@@ -4,6 +4,16 @@
   "private": true,
   "type": "module",
   "description": "Static browser-based Lebenslauf / Anschreiben / CV creator with modular HTML/CSS templates.",
+  "author": "Ömer Ergün",
+  "license": "MIT",
+  "homepage": "https://oemererguen.github.io/lebenslauf-anschreiben-creator/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OemerErguen/lebenslauf-anschreiben-creator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/OemerErguen/lebenslauf-anschreiben-creator/issues"
+  },
   "engines": {
     "node": ">=22.0.0",
     "pnpm": ">=10.0.0"
