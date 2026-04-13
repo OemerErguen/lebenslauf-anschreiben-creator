@@ -70,7 +70,7 @@ export function ContactInfoForm({ slotName, componentId }: SlotFormProps) {
     <div className="flex flex-col gap-3">
       <ToggleGroup options={displayStyleOptions} value={displayStyle} onChange={setDisplayStyle} />
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Field
           label={t('basics.email')}
           type="email"

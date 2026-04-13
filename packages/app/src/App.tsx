@@ -13,6 +13,8 @@ export function App() {
   const uiLocale = useSettingsStore((s) => s.settings.uiLocale);
   const setUiLocale = useSettingsStore((s) => s.setUiLocale);
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [previewVisible, setPreviewVisible] = useState(false);
 
   useEffect(() => {
     void i18n.changeLanguage(uiLocale);
@@ -28,7 +30,10 @@ export function App() {
   };
 
   return (
-    <div className="flex h-screen flex-col" data-cv-app-chrome>
+    <div
+      className="flex min-h-screen flex-col overflow-x-hidden lg:h-screen lg:min-h-0"
+      data-cv-app-chrome
+    >
       {/* Clear-all warning dialog */}
       {clearDialogOpen && (
         <div
@@ -76,26 +81,75 @@ export function App() {
       )}
 
       {/* App header */}
-      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 py-2 sm:px-6">
-        <h1 className="shrink-0 text-sm font-semibold text-slate-900 sm:text-base">
+      <header className="flex shrink-0 items-center justify-between gap-2 border-b border-slate-200 bg-white px-4 py-2 sm:gap-3 sm:px-6">
+        <h1 className="min-w-0 truncate text-sm font-semibold text-slate-900 sm:text-base">
           {t('app.title')}
         </h1>
 
-        <div className="flex items-center gap-2">
-          <IoButtons />
+        <div className="flex shrink-0 items-center gap-2">
+          {/* Desktop-only actions */}
+          <div className="hidden md:flex md:items-center md:gap-2">
+            <IoButtons />
 
-          {/* Clear all data */}
-          <button
-            type="button"
-            onClick={() => {
-              setClearDialogOpen(true);
-            }}
-            className="rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-100"
-          >
-            {t('actions.clearAll')}
-          </button>
+            {/* Clear all data */}
+            <button
+              type="button"
+              onClick={() => {
+                setClearDialogOpen(true);
+              }}
+              className="rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-100"
+            >
+              {t('actions.clearAll')}
+            </button>
 
-          {/* Download PDF */}
+            {/* Support link */}
+            <a
+              href="https://buymeacoffee.com/4zdjzsf6r7p"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 rounded-md border border-amber-200 bg-amber-50 px-2 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100"
+            >
+              <svg
+                className="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
+                <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
+                <line x1="6" y1="2" x2="6" y2="4" />
+                <line x1="10" y1="2" x2="10" y2="4" />
+                <line x1="14" y1="2" x2="14" y2="4" />
+              </svg>
+              {t('support.link')}
+            </a>
+
+            {/* Language toggle — globe icon */}
+            <button
+              type="button"
+              onClick={toggleLocale}
+              className="flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100"
+              title={t('settings.uiLocale')}
+            >
+              <svg
+                className="h-4 w-4"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.2"
+              >
+                <circle cx="8" cy="8" r="6.5" />
+                <ellipse cx="8" cy="8" rx="3" ry="6.5" />
+                <line x1="1.5" y1="8" x2="14.5" y2="8" />
+              </svg>
+              {uiLocale.toUpperCase()}
+            </button>
+          </div>
+
+          {/* Download PDF — always visible */}
           <button
             type="button"
             onClick={triggerPreviewPrint}
@@ -104,69 +158,157 @@ export function App() {
             {t('actions.downloadPdf')}
           </button>
 
-          {/* Support link */}
-          <a
-            href="https://buymeacoffee.com/4zdjzsf6r7p"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 rounded-md border border-amber-200 bg-amber-50 px-2 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100"
-          >
-            <svg
-              className="h-4 w-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
-              <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
-              <line x1="6" y1="2" x2="6" y2="4" />
-              <line x1="10" y1="2" x2="10" y2="4" />
-              <line x1="14" y1="2" x2="14" y2="4" />
-            </svg>
-            {t('support.link')}
-          </a>
-
-          {/* Language toggle — globe icon */}
+          {/* Hamburger menu button — mobile only */}
           <button
             type="button"
-            onClick={toggleLocale}
-            className="flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100"
-            title={t('settings.uiLocale')}
+            onClick={() => {
+              setMenuOpen((v) => !v);
+            }}
+            className="rounded-md border border-slate-200 p-1.5 text-slate-600 hover:bg-slate-100 md:hidden"
+            aria-label="Menu"
           >
-            <svg
-              className="h-4 w-4"
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.2"
-            >
-              <circle cx="8" cy="8" r="6.5" />
-              <ellipse cx="8" cy="8" rx="3" ry="6.5" />
-              <line x1="1.5" y1="8" x2="14.5" y2="8" />
-            </svg>
-            {uiLocale.toUpperCase()}
+            {menuOpen ? (
+              <svg
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <path d="M5 5l10 10M15 5L5 15" />
+              </svg>
+            ) : (
+              <svg
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <path d="M3 5h14M3 10h14M3 15h14" />
+              </svg>
+            )}
           </button>
         </div>
       </header>
+
+      {/* Mobile dropdown menu */}
+      {menuOpen && (
+        <div className="flex flex-col gap-2 border-b border-slate-200 bg-white px-4 py-3 md:hidden">
+          <div className="flex gap-2">
+            <IoButtons />
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setClearDialogOpen(true);
+              setMenuOpen(false);
+            }}
+            className="rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-100"
+          >
+            {t('actions.clearAll')}
+          </button>
+          <div className="flex gap-2">
+            <a
+              href="https://buymeacoffee.com/4zdjzsf6r7p"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-md border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm font-medium text-amber-700 hover:bg-amber-100"
+            >
+              <svg
+                className="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
+                <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
+                <line x1="6" y1="2" x2="6" y2="4" />
+                <line x1="10" y1="2" x2="10" y2="4" />
+                <line x1="14" y1="2" x2="14" y2="4" />
+              </svg>
+              {t('support.link')}
+            </a>
+            <button
+              type="button"
+              onClick={() => {
+                toggleLocale();
+                setMenuOpen(false);
+              }}
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100"
+            >
+              <svg
+                className="h-4 w-4"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.2"
+              >
+                <circle cx="8" cy="8" r="6.5" />
+                <ellipse cx="8" cy="8" rx="3" ry="6.5" />
+                <line x1="1.5" y1="8" x2="14.5" y2="8" />
+              </svg>
+              {uiLocale.toUpperCase()}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Document toolbar: design, language, settings, doc type toggle */}
       <DocumentToolbar />
 
       {/* Two-column layout: editor + preview */}
-      <div className="flex min-h-0 flex-1 flex-col gap-4 p-4 lg:flex-row lg:gap-6 lg:p-6">
-        <section className="min-h-0 min-w-0 basis-1/2 overflow-y-auto scrollbar-none">
+      <div className="flex flex-col gap-4 p-4 lg:min-h-0 lg:flex-1 lg:flex-row lg:gap-6 lg:p-6">
+        <section
+          className={`min-w-0 lg:min-h-0 lg:basis-1/2 lg:overflow-y-auto lg:scrollbar-none ${previewVisible ? 'hidden lg:block' : ''}`}
+        >
           <div className="flex flex-col gap-4">
             <ResumeEditor />
           </div>
         </section>
 
-        <section className="min-h-0 min-w-0 basis-1/2 overflow-hidden rounded-lg border border-slate-200 bg-slate-200">
+        <section
+          className={`min-w-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-200 lg:min-h-0 lg:basis-1/2 ${previewVisible ? '' : 'h-0 lg:h-auto'}`}
+        >
           <PreviewPane />
         </section>
       </div>
+
+      {/* Floating toggle button — mobile only */}
+      <button
+        type="button"
+        onClick={() => {
+          setPreviewVisible((v) => !v);
+        }}
+        className="fixed bottom-4 right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 text-white shadow-lg hover:bg-slate-800 lg:hidden"
+        title={previewVisible ? t('preview.showEditor') : t('preview.showPreview')}
+      >
+        {previewVisible ? (
+          <svg
+            className="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
+            <path d="M13.586 3.586a2 2 0 112.828 2.828l-8.793 8.793-3.536.707.707-3.536 8.794-8.792z" />
+          </svg>
+        ) : (
+          <svg
+            className="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
+            <path d="M10 4.5C5.5 4.5 2 10 2 10s3.5 5.5 8 5.5 8-5.5 8-5.5-3.5-5.5-8-5.5z" />
+            <circle cx="10" cy="10" r="2.5" />
+          </svg>
+        )}
+      </button>
     </div>
   );
 }

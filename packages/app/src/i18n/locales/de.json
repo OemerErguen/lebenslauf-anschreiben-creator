@@ -227,7 +227,9 @@
     "rendering": "Wird gerendert…",
     "zoomIn": "Vergrößern",
     "zoomOut": "Verkleinern",
-    "zoomReset": "Zoom zurücksetzen"
+    "zoomReset": "Zoom zurücksetzen",
+    "showPreview": "Vorschau anzeigen",
+    "showEditor": "Editor anzeigen"
   },
   "designer": {
     "colors": "Farben",

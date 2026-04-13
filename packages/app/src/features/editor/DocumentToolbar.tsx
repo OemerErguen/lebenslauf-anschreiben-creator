@@ -34,7 +34,7 @@ export function DocumentToolbar() {
 
   return (
     <>
-      <div className="flex shrink-0 flex-wrap items-center gap-3 border-b border-slate-200 bg-white px-4 py-2 sm:px-6">
+      <div className="flex shrink-0 flex-wrap items-center gap-2 overflow-x-auto border-b border-slate-200 bg-white px-4 py-2 sm:gap-3 sm:px-6">
         {/* Design selector with label */}
         <div className="flex items-center gap-2">
           <span className="text-xs font-medium text-slate-500">{t('toolbar.design')}</span>
