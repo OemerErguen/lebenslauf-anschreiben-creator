@@ -63,7 +63,7 @@ export function TagInput({ tags, onChange, placeholder }: TagInputProps) {
           if (input.trim()) addTag(input);
         }}
         placeholder={tags.length === 0 ? placeholder : ''}
-        className="min-w-[80px] flex-1 border-0 bg-transparent p-0 text-sm outline-none"
+        className="min-w-20 flex-1 border-0 bg-transparent p-0 text-sm outline-none"
       />
     </label>
   );

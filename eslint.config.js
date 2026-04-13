@@ -82,9 +82,6 @@ export default tseslint.config(
                 },
               },
             },
-            // Legacy
-            { from: { type: 'template-api' }, allow: { to: { type: 'core' } } },
-            { from: { type: 'templates' }, allow: { to: { type: ['core', 'template-api'] } } },
           ],
         },
       ],

@@ -105,7 +105,7 @@ export function SignaturePad({ onSave }: SignaturePadProps) {
     <div className="flex flex-col gap-2">
       <canvas
         ref={canvasRef}
-        className="h-[120px] w-full cursor-crosshair rounded-md border-2 border-dashed border-slate-300 bg-white"
+        className="h-30 w-full cursor-crosshair rounded-md border-2 border-dashed border-slate-300 bg-white"
       />
       <div className="flex gap-2">
         <Button variant="ghost" size="sm" onClick={handleClear}>
