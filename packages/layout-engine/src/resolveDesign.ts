@@ -74,27 +74,6 @@ export function resolveSlotAssignments(
 }
 
 /**
- * Resolve a specific slot option value.
- * @param design
- * @param overrides
- * @param slotName
- * @param optionKey
- * @returns The resolved option value, or undefined if not set
- */
-export function resolveSlotOption(
-  design: DesignDefinition,
-  overrides: UserOverrides,
-  slotName: string,
-  optionKey: string,
-): unknown {
-  const overrideKey = `${slotName}.${optionKey}`;
-  if (overrideKey in overrides.slotOptions) {
-    return overrides.slotOptions[overrideKey];
-  }
-  return design.slots[slotName]?.options?.[optionKey]?.default;
-}
-
-/**
  * Resolve all slot options into a flat map keyed as "slotName.optionKey".
  * @param design
  * @param overrides

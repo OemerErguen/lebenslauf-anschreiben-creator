@@ -11,7 +11,6 @@ export type {
   SectionId,
 } from './schema/common.js';
 export type {
-  Award,
   Basics,
   Certificate,
   CustomSection,
@@ -21,11 +20,8 @@ export type {
   Location,
   Profile,
   Project,
-  Publication,
-  Reference,
   Resume,
   Skill,
-  Volunteer,
   Work,
 } from './schema/resume.js';
 export type { CoverLetter, CoverLetterParty } from './schema/coverLetter.js';

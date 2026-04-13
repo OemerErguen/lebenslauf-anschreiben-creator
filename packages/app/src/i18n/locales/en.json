@@ -218,6 +218,9 @@
   "settings": {
     "uiLocale": "UI language"
   },
+  "support": {
+    "link": "Support"
+  },
   "preview": {
     "page": "page",
     "pages": "pages",

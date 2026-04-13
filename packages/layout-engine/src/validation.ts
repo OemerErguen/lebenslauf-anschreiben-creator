@@ -30,20 +30,3 @@ export function getCompatibleComponents(
   });
 }
 
-/**
- * Checks whether a specific component can be added to a slot.
- * @param slotDef
- * @param component
- * @param currentAssignments
- * @returns True if the component can be added to the slot
- */
-export function canAddToSlot(
-  slotDef: ExpandedSlotDefinition,
-  component: ComponentDefinition,
-  currentAssignments: SlotAssignment[],
-): boolean {
-  if (slotDef.maxComponents !== undefined && currentAssignments.length >= slotDef.maxComponents) {
-    return false;
-  }
-  return component.allowedSlots.some((s) => slotDef.accepts.includes(s));
-}
