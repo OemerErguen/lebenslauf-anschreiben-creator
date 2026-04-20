@@ -116,7 +116,7 @@ const componentDefinitions: ComponentDefinition[] = [
     dataFields: ['skills'],
     allowedSlots: ['sidebar', 'main', 'aside'],
     optionsSchema: z.object({
-      displayMode: z.enum(['text', 'bar', 'stars', 'dots']).default('text'),
+      displayMode: z.enum(['text', 'bar', 'stars', 'dots', 'none']).default('text'),
       columns: z.union([z.literal(1), z.literal(2), z.literal(3)]).default(1),
     }),
     defaultOptions: { displayMode: 'text' },

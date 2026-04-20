@@ -46,6 +46,8 @@ function LevelIndicator({
   locale: Locale;
 }) {
   switch (displayMode) {
+    case 'none':
+      return null;
     case 'bar': {
       const pct = Math.round(getValue(level) * 100);
       return (
