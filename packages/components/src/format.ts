@@ -24,6 +24,9 @@ export function formatIsoDate(value: IsoDateLike | undefined, locale: Locale): s
 /**
  * Format a full ISO date for display (e.g. "14.05.1992" for de, "May 14, 1992" for en).
  * Falls back to {@link formatIsoDate} for partial dates (YYYY or YYYY-MM).
+ * @param value
+ * @param locale
+ * @returns Formatted date string, or empty string if value is undefined.
  */
 export function formatFullDate(value: IsoDateLike | undefined, locale: Locale): string {
   if (!value) return '';

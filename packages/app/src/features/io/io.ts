@@ -39,6 +39,8 @@ export async function importJsonFile(file: File): Promise<void> {
   useCoverLetterStore.getState().setCoverLetter(state.coverLetter);
   useSettingsStore.getState().setSettings(state.settings);
   if (state.design) {
-    useDesignStore.getState().applyPresetOverrides(state.design.activeDesignId, state.design.overrides);
+    useDesignStore
+      .getState()
+      .applyPresetOverrides(state.design.activeDesignId, state.design.overrides);
   }
 }
