@@ -1,4 +1,5 @@
 import type { ComponentRenderProps } from '@cv/layout-engine';
+import { formatFullDate } from './format.js';
 import { getLabel } from './labels.js';
 import { optStrArray } from './optionUtils.js';
 
@@ -32,7 +33,7 @@ export function PersonalInfo({ resume, locale, options }: ComponentRenderProps) 
             {kvFields.includes('birthDate') && basics.birthDate && (
               <>
                 <dt>{getLabel(locale, 'birthDate')}</dt>
-                <dd>{basics.birthDate}</dd>
+                <dd>{formatFullDate(basics.birthDate, locale)}</dd>
               </>
             )}
             {kvFields.includes('birthPlace') && basics.birthPlace && (

@@ -31,8 +31,8 @@ body {
   font-size: 9.5pt;
   font-weight: 700;
   color: var(--cv-primary);
-  margin: 0 0 3mm 0;
-  padding-bottom: 1.5mm;
+  margin: 0 0 1.5mm 0;
+  padding-bottom: 0;
 }
 
 .cv-section-title--uppercase-spaced {
@@ -408,6 +408,13 @@ body {
   gap: 2mm;
   padding: 0.4mm 0;
   font-size: 9.5pt;
+  min-width: 0;
+}
+.cv-skill > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 .cv-skill-level {
   color: var(--cv-muted);
@@ -446,7 +453,7 @@ body {
 }
 .cv-skill-visual-icons {
   display: flex;
-  gap: 0.5mm;
+  gap: 0;
   color: var(--cv-primary);
   font-size: 9pt;
 }
@@ -471,6 +478,8 @@ body {
 /* --- Skill groups (sidebar — tight, minimal) --- */
 .cv-skill-group {
   margin-bottom: 2.5mm;
+  break-inside: avoid;
+  page-break-inside: avoid;
 }
 .cv-skill-group:last-child {
   margin-bottom: 0;
@@ -937,24 +946,24 @@ a.cv-contact-link {
 /* Collapse spacing when there's no reference */
 .cv-din5008-subject:last-child,
 .cv-din5008-subject + .cv-din5008-salutation {
-  margin-bottom: 8.5mm;
+  margin-bottom: 6mm;
 }
 
 /* Salutation */
 .cv-din5008-salutation {
   font-size: 10.5pt;
-  margin-bottom: 4.25mm;
+  margin-bottom: 3mm;
 }
 
 /* Paragraphs */
 .cv-din5008-text {
   display: flex;
   flex-direction: column;
-  gap: 4.25mm;
+  gap: 3mm;
 }
 .cv-din5008-paragraph {
   font-size: 10.5pt;
-  line-height: 1.5;
+  line-height: 1.4;
   text-align: justify;
   hyphens: auto;
 }
@@ -964,16 +973,16 @@ a.cv-contact-link {
 
 /* Closing */
 .cv-din5008-closing {
-  margin-top: 4.25mm;
+  margin-top: 6mm;
 }
 
 /* Signature */
 .cv-din5008-signature {
-  margin-top: 3mm;
+  margin-top: 1mm;
   font-size: 10.5pt;
 }
 .cv-din5008-signature-img {
-  max-height: 12mm;
+  max-height: 14mm;
   width: auto;
   display: block;
   margin-bottom: 1mm;
@@ -1058,10 +1067,11 @@ a.cv-contact-link {
 /* Form A (27mm): compact sizing */
 .cv-din5008--form-a .cv-lh-title {
   gap: 1mm;
+  padding-left: 0;
 }
 .cv-din5008--form-a {
-  --lh-title-name-size: 14pt;
-  --lh-title-label-size: 9pt;
+  --lh-title-name-size: 18pt;
+  --lh-title-label-size: 12pt;
 }
 .cv-din5008--form-a {
   --lh-contact-size: 7.5pt;

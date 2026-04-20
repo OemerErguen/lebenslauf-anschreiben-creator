@@ -20,7 +20,7 @@ export const STANDARD_SPACING_SCALE: SpacingDeclaration = {
   options: ['compact', 'normal', 'spacious'],
   default: 'normal',
   scale: {
-    compact: { section: '4mm', entry: '2mm', gap: '5mm' },
+    compact: { section: '3mm', entry: '1.5mm', gap: '4mm' },
     normal: { section: '7mm', entry: '3mm', gap: '7mm' },
     spacious: { section: '10mm', entry: '5mm', gap: '9mm' },
   },

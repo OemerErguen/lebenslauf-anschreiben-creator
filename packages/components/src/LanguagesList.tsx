@@ -21,7 +21,7 @@ export function LanguagesList({ resume, locale, tokens }: ComponentRenderProps) 
       <dl className="cv-kv cv-kv--skill">
         {resume.languages.map((l) => (
           <div key={l.id} style={{ display: 'contents' }}>
-            <dt>{l.language}</dt>
+            <dt>{l.language}:</dt>
             <dd>{l.fluency ? getLabel(locale, `fluency_${l.fluency}` as LabelKey) : ''}</dd>
           </div>
         ))}

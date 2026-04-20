@@ -22,6 +22,24 @@ export function formatIsoDate(value: IsoDateLike | undefined, locale: Locale): s
 }
 
 /**
+ * Format a full ISO date for display (e.g. "14.05.1992" for de, "May 14, 1992" for en).
+ * Falls back to {@link formatIsoDate} for partial dates (YYYY or YYYY-MM).
+ */
+export function formatFullDate(value: IsoDateLike | undefined, locale: Locale): string {
+  if (!value) return '';
+  const parts = value.split('-');
+  if (parts.length < 3) return formatIsoDate(value, locale);
+  const [year, month, day] = parts;
+  const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat(locale === 'de' ? 'de-DE' : 'en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date);
+}
+
+/**
  *
  * @param start
  * @param end

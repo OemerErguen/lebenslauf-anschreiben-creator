@@ -139,7 +139,7 @@ export const sidebarLeftDesign = defineDesign({
 }
 .cv-slot-sidebar {
   background: var(--cv-sidebar-bg);
-  padding: 14mm 10mm;
+  padding: 10mm 10mm 14mm;
   display: flex;
   flex-direction: column;
   gap: var(--cv-spacing-gap);
