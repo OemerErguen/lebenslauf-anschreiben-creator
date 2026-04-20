@@ -17,7 +17,7 @@ export { LetterTitle } from './LetterTitle.js';
 export { LetterContact } from './LetterContact.js';
 export { getContactIcon, KNOWN_NETWORKS } from './contactIcons.js';
 export { getLabel } from './labels.js';
-export { formatDateRange, formatIsoDate } from './format.js';
+export { formatDateRange, formatFullDate, formatIsoDate } from './format.js';
 
 // Re-export the base CSS as a string for the rendering pipeline
 import baseCssUrl from './base.css?raw';

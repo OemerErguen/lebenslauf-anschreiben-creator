@@ -13,7 +13,12 @@ export const locationSchema = z
     postalCode: z.string().optional(),
     city: z.string().optional(),
     region: z.string().optional(),
-    countryCode: z.string().length(2).optional(),
+    countryCode: z
+      .string()
+      .optional()
+      .refine((v) => v === undefined || v === '' || v.length === 2, {
+        message: 'countryCode must be empty or exactly 2 characters',
+      }),
   })
   .partial();
 /**
