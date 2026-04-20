@@ -40,7 +40,7 @@
     "eslint-plugin-boundaries": "latest",
     "eslint-plugin-jsdoc": "^62.9.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-perfectionist": "^5.8.0",
+    "eslint-plugin-perfectionist": "^5.9.0",
     "eslint-plugin-react": "latest",
     "eslint-plugin-react-hooks": "latest",
     "eslint-plugin-unicorn": "^64.0.0",
