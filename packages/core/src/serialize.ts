@@ -3,12 +3,19 @@ import { CURRENT_SCHEMA_VERSION, type PersistedState, runMigrations } from './mi
 import { coverLetterSchema } from './schema/coverLetter.js';
 import { resumeSchema } from './schema/resume.js';
 import { settingsSchema } from './schema/settings.js';
+import { userOverridesSchema } from './schema/userOverrides.js';
+
+const persistedDesignSchema = z.object({
+  activeDesignId: z.string(),
+  overrides: userOverridesSchema,
+});
 
 export const persistedStateSchema = z.object({
   schemaVersion: z.number().int().positive(),
   resume: resumeSchema,
   coverLetter: coverLetterSchema,
   settings: settingsSchema,
+  design: persistedDesignSchema.optional(),
 });
 
 /**

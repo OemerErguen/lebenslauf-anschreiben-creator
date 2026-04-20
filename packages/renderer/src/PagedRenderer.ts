@@ -108,6 +108,7 @@ export class PagedRenderer {
     <meta charset="utf-8" />
     <base href="${baseHref}" />
     <title>CV render</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" />
     <style>${stylesheet}</style>
     <style>${PAGEDJS_INTERFACE_CSS}</style>
     <script src="${this.options.pagedPolyfillUrl}"></script>

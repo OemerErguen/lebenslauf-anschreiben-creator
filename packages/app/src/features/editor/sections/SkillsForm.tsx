@@ -30,6 +30,7 @@ const DISPLAY_MODES = [
   { value: 'bar', label: 'Bar' },
   { value: 'stars', label: 'Stars' },
   { value: 'dots', label: 'Dots' },
+  { value: 'none', label: 'None' },
 ] as const;
 
 const COLUMN_OPTIONS = [
@@ -173,14 +174,16 @@ export function SkillsForm({ slotName, componentId }: SlotFormProps) {
                       placeholder={t('skills.childPlaceholder')}
                       className="min-w-0 flex-1 rounded-md border border-slate-300 bg-white px-2 py-1 text-sm shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
                     />
-                    <LevelInput
-                      displayMode={displayMode}
-                      value={child.level}
-                      onChange={(level) => {
-                        patchChild(skill.id, child.id, { level });
-                      }}
-                      i18nPrefix="skills.level"
-                    />
+                    {displayMode !== 'none' && (
+                      <LevelInput
+                        displayMode={displayMode}
+                        value={child.level}
+                        onChange={(level) => {
+                          patchChild(skill.id, child.id, { level });
+                        }}
+                        i18nPrefix="skills.level"
+                      />
+                    )}
                     <button
                       type="button"
                       onClick={() => {
@@ -215,17 +218,19 @@ export function SkillsForm({ slotName, componentId }: SlotFormProps) {
                   }}
                 />
               </div>
-              <div className="flex flex-col gap-1 pb-0.5">
-                <span className="text-xs font-medium text-slate-500">{t('skills.level')}</span>
-                <LevelInput
-                  displayMode={displayMode}
-                  value={skill.level}
-                  onChange={(level) => {
-                    patch(skill.id, { level });
-                  }}
-                  i18nPrefix="skills.level"
-                />
-              </div>
+              {displayMode !== 'none' && (
+                <div className="flex flex-col gap-1 pb-0.5">
+                  <span className="text-xs font-medium text-slate-500">{t('skills.level')}</span>
+                  <LevelInput
+                    displayMode={displayMode}
+                    value={skill.level}
+                    onChange={(level) => {
+                      patch(skill.id, { level });
+                    }}
+                    i18nPrefix="skills.level"
+                  />
+                </div>
+              )}
               <Button
                 variant="danger"
                 size="sm"

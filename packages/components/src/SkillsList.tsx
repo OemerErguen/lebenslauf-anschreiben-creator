@@ -26,13 +26,14 @@ function getValue(level: number | undefined): number {
 }
 
 /**
- * Returns filled count supporting halves (e.g. 70 → 3.5).
+ * Returns filled count as whole number (e.g. 70 → 4).
+ * Rounded to nearest integer for clean rendering in PDF/print.
  * @param level
- * @returns Star count from 0 to 5, supporting half values
+ * @returns Star count from 0 to 5, whole values only
  */
 function getStarCount(level: number | undefined): number {
-  if (level == null) return 2.5;
-  return Math.round(level / 10) / 2; // 70 → 3.5, 100 → 5, 40 → 2
+  if (level == null) return 3;
+  return Math.min(5, Math.round(level / 20)); // 70 → 4, 100 → 5, 40 → 2, 90 → 5
 }
 
 function LevelIndicator({
@@ -45,6 +46,8 @@ function LevelIndicator({
   locale: Locale;
 }) {
   switch (displayMode) {
+    case 'none':
+      return null;
     case 'bar': {
       const pct = Math.round(getValue(level) * 100);
       return (
