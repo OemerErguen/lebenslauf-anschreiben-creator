@@ -17,7 +17,7 @@
   "dependencies": {
     "@cv/core": "workspace:*",
     "@cv/layout-engine": "workspace:*",
-    "dompurify": "^3.3.3",
+    "dompurify": "^3.4.0",
     "react": "latest",
     "zod": "latest"
   },
