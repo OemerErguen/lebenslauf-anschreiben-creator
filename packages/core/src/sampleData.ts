@@ -1,8 +1,11 @@
-import type { PersistedState } from './migrations/index.js';
-import type { CoverLetter } from './schema/coverLetter.js';
+import type { CoverLetterProfile } from './schema/coverLetterProfile.js';
+import type { CoverLetterVariant } from './schema/coverLetterVariant.js';
+import type { CVVariant } from './schema/cvVariant.js';
+import type { PersistedState, UserProfile } from './schema/persistedState.js';
 import type { Resume } from './schema/resume.js';
-import type { Settings } from './schema/settings.js';
-import { CURRENT_SCHEMA_VERSION } from './migrations/index.js';
+import type { GlobalSettings } from './schema/settings.js';
+import { DEFAULT_SECTION_ORDER, DEFAULT_SECTION_VISIBILITY } from './schema/cvVariant.js';
+import { CURRENT_SCHEMA_VERSION } from './schema/persistedState.js';
 
 export const sampleResume: Resume = {
   basics: {
@@ -127,7 +130,7 @@ export const sampleResume: Resume = {
   custom: [],
 };
 
-export const sampleCoverLetter: CoverLetter = {
+export const sampleCoverLetterProfile: CoverLetterProfile = {
   sender: {
     name: 'Alex Muster',
     location: {
@@ -137,6 +140,43 @@ export const sampleCoverLetter: CoverLetter = {
       address: 'Musterstraße 1',
     },
   },
+  signatureName: 'Alex Muster',
+  signatureImage: '',
+  defaultClosing: 'Mit freundlichen Grüßen',
+  defaultDin5008Form: 'B',
+  defaultShowFoldMarks: true,
+  defaultShowSenderInfo: true,
+  paragraphLibrary: [],
+};
+
+export const sampleProfile: UserProfile = {
+  resume: sampleResume,
+  coverLetter: sampleCoverLetterProfile,
+};
+
+export const sampleCvVariant: CVVariant = {
+  id: 'variant-default',
+  name: 'Standard-Lebenslauf',
+  documentLocale: 'de',
+  paperSize: 'A4',
+  sectionOrder: [...DEFAULT_SECTION_ORDER],
+  sectionVisibility: { ...DEFAULT_SECTION_VISIBILITY },
+  selections: {},
+  design: {
+    activeDesignId: 'sidebar-left',
+    overrides: {
+      colors: {},
+      fonts: {},
+      options: {},
+      slotOptions: {},
+      slotAssignments: {},
+    },
+  },
+};
+
+export const sampleCoverLetterVariant: CoverLetterVariant = {
+  id: 'cl-variant-default',
+  name: 'Standard-Anschreiben',
   recipient: {
     name: 'Frau Dr. Schmidt',
     company: 'Beispiel AG',
@@ -157,51 +197,19 @@ export const sampleCoverLetter: CoverLetter = {
     'Bei Acme Corp habe ich die Frontend-Plattform für über 2 Mio. monatliche Nutzer:innen mitverantwortet und ein Design-System aufgebaut, das heute von mehreren Produkt-Teams eingesetzt wird.',
     'Ich freue mich auf ein persönliches Kennenlernen.',
   ],
-  closing: 'Mit freundlichen Grüßen',
-  signatureName: 'Alex Muster',
-  din5008Form: 'B',
-  showFoldMarks: true,
-  showSenderInfo: true,
 };
 
-export const sampleSettings: Settings = {
+export const sampleGlobalSettings: GlobalSettings = {
   uiLocale: 'de',
-  documentLocale: 'de',
-  selectedTemplateId: 'classic-de',
-  templateOptions: {},
-  sectionOrder: [
-    'personal',
-    'summary',
-    'experience',
-    'education',
-    'skills',
-    'languages',
-    'projects',
-    'certificates',
-    'interests',
-  ],
-  sectionVisibility: {
-    personal: true,
-    summary: true,
-    experience: true,
-    education: true,
-    skills: true,
-    languages: true,
-    projects: false,
-    certificates: false,
-    publications: false,
-    awards: false,
-    volunteer: false,
-    interests: false,
-    references: false,
-    custom: false,
-  },
-  paperSize: 'A4',
+  activeDocumentType: 'lebenslauf',
 };
 
 export const sampleState: PersistedState = {
   schemaVersion: CURRENT_SCHEMA_VERSION,
-  resume: sampleResume,
-  coverLetter: sampleCoverLetter,
-  settings: sampleSettings,
+  globalSettings: sampleGlobalSettings,
+  profile: sampleProfile,
+  cvVariants: [sampleCvVariant],
+  coverLetterVariants: [sampleCoverLetterVariant],
+  activeCvVariantId: sampleCvVariant.id,
+  activeCoverLetterVariantId: sampleCoverLetterVariant.id,
 };

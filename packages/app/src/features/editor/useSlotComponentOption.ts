@@ -1,5 +1,8 @@
 import { useCallback, useMemo } from 'react';
-import { useCoverLetterStore } from '../../state/coverLetterStore.js';
+import {
+  useActiveCoverLetterVariant,
+  useCoverLetterVariantsStore,
+} from '../../state/coverLetterVariantsStore.js';
 import {
   useActiveDesign,
   useDesignStore,
@@ -9,9 +12,9 @@ import {
 /**
  * Reads and writes a specific option for a component in a specific slot.
  *
- * For regular CV slots: uses the design store (resolved slot assignments).
- * For anschreiben zones (slot name starts with 'anschreiben-'): uses the
- * cover letter store, falling back to design's anschreibenConfig defaults.
+ * For regular CV slots: operates on the active CV variant's design overrides.
+ * For anschreiben zones (slot name starts with 'anschreiben-'): operates on the
+ * active cover-letter variant's zone overrides, falling back to design defaults.
  */
 export function useSlotComponentOption(
   slotName: string,
@@ -21,35 +24,41 @@ export function useSlotComponentOption(
 ) {
   const isAnschreibenZone = slotName.startsWith('anschreiben-');
 
-  // CV slot path
   const updateComponentOptions = useDesignStore((s) => s.updateComponentOptions);
   const allAssignments = useResolvedSlotAssignments();
 
-  // Anschreiben zone path
-  const cl = useCoverLetterStore((s) => s.coverLetter);
-  const updateZoneComponentOptions = useCoverLetterStore((s) => s.updateZoneComponentOptions);
+  const clVariant = useActiveCoverLetterVariant();
+  const updateZoneComponentOptions = useCoverLetterVariantsStore(
+    (s) => s.updateZoneComponentOptions,
+  );
   const design = useActiveDesign();
 
-  // Anschreiben zone path (computed unconditionally to satisfy rules-of-hooks)
   const zone = slotName === 'anschreiben-header' ? ('header' as const) : ('footer' as const);
   const overrideKey =
     zone === 'header' ? 'headerComponentOverrides' : ('footerComponentOverrides' as const);
   const configKey = zone === 'header' ? 'headerComponents' : ('footerComponents' as const);
   const rawAnschreibenDefaults = design?.anschreibenConfig?.[configKey];
   const anschreibenDefaults = useMemo(() => rawAnschreibenDefaults ?? [], [rawAnschreibenDefaults]);
-  const anschreibenAssignments = cl[overrideKey] ?? anschreibenDefaults;
+  const anschreibenAssignments = clVariant?.[overrideKey] ?? anschreibenDefaults;
   const anschreibenMatch = anschreibenAssignments.find((a) => a.componentId === componentId);
   const anschreibenValue =
     (anschreibenMatch?.options[optionKey] as string | undefined) ?? defaultValue;
 
+  const clVariantId = clVariant?.id;
   const setAnschreibenValue = useCallback(
     (newValue: string) => {
-      updateZoneComponentOptions(zone, componentId, { [optionKey]: newValue }, anschreibenDefaults);
+      if (!clVariantId) return;
+      updateZoneComponentOptions(
+        clVariantId,
+        zone,
+        componentId,
+        { [optionKey]: newValue },
+        anschreibenDefaults,
+      );
     },
-    [zone, componentId, optionKey, updateZoneComponentOptions, anschreibenDefaults],
+    [clVariantId, zone, componentId, optionKey, updateZoneComponentOptions, anschreibenDefaults],
   );
 
-  // Regular CV slot path
   const cvAssignments = allAssignments[slotName] ?? [];
   const cvMatch = cvAssignments.find((a) => a.componentId === componentId);
   const cvValue = (cvMatch?.options[optionKey] as string | undefined) ?? defaultValue;

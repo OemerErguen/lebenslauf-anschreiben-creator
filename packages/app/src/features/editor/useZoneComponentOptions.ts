@@ -1,11 +1,14 @@
 import { useCallback, useMemo } from 'react';
-import { useCoverLetterStore } from '../../state/coverLetterStore.js';
+import {
+  useActiveCoverLetterVariant,
+  useCoverLetterVariantsStore,
+} from '../../state/coverLetterVariantsStore.js';
 import { useActiveDesign } from '../../state/designStore.js';
 
 /**
  * Reads and writes the full options object for a letter component in a
- * header/footer zone. Unlike useSlotComponentOption (single key, string only),
- * this supports any value type — needed for arrays (profiles) and complex data.
+ * header/footer zone. Zone component overrides live on the active
+ * cover-letter variant; if unset, the design defaults apply.
  */
 export function useZoneComponentOptions(
   slotName: string,
@@ -16,21 +19,25 @@ export function useZoneComponentOptions(
     zone === 'header' ? 'headerComponentOverrides' : ('footerComponentOverrides' as const);
   const configKey = zone === 'header' ? 'headerComponents' : ('footerComponents' as const);
 
-  const cl = useCoverLetterStore((s) => s.coverLetter);
-  const updateZoneComponentOptions = useCoverLetterStore((s) => s.updateZoneComponentOptions);
+  const variant = useActiveCoverLetterVariant();
+  const updateZoneComponentOptions = useCoverLetterVariantsStore(
+    (s) => s.updateZoneComponentOptions,
+  );
   const design = useActiveDesign();
 
   const rawDefaults = design?.anschreibenConfig?.[configKey];
   const defaults = useMemo(() => rawDefaults ?? [], [rawDefaults]);
-  const assignments = cl[overrideKey] ?? defaults;
+  const assignments = variant?.[overrideKey] ?? defaults;
   const match = assignments.find((a) => a.componentId === componentId);
   const options = match?.options ?? {};
 
+  const variantId = variant?.id;
   const patchOptions = useCallback(
     (patch: Record<string, unknown>) => {
-      updateZoneComponentOptions(zone, componentId, patch, defaults);
+      if (!variantId) return;
+      updateZoneComponentOptions(variantId, zone, componentId, patch, defaults);
     },
-    [zone, componentId, updateZoneComponentOptions, defaults],
+    [variantId, zone, componentId, updateZoneComponentOptions, defaults],
   );
 
   return [options, patchOptions];

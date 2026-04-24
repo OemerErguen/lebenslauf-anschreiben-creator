@@ -1,8 +1,8 @@
 import type { SlotFormProps } from '../formRegistry.js';
 import { useTranslation } from 'react-i18next';
 import { NATIONALITIES } from '../../../data/nationalities.js';
+import { useActiveCvVariant } from '../../../state/cvVariantsStore.js';
 import { useResumeStore } from '../../../state/resumeStore.js';
-import { useSettingsStore } from '../../../state/settingsStore.js';
 import { Field } from '../../../ui/Field.js';
 import { Select } from '../../../ui/Select.js';
 
@@ -12,7 +12,7 @@ export function PersonalInfoForm(props: SlotFormProps) {
   const resume = useResumeStore((s) => s.resume);
   const setResume = useResumeStore((s) => s.setResume);
 
-  const documentLocale = useSettingsStore((s) => s.settings.documentLocale);
+  const documentLocale = useActiveCvVariant()?.documentLocale ?? 'de';
 
   const basics = resume.basics;
   const update = (patch: Partial<typeof basics>) => {

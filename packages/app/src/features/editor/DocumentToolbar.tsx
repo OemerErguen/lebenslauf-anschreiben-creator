@@ -2,6 +2,7 @@ import type { Locale } from '@cv/core';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getAllDesigns } from '@cv/layout-engine';
+import { useActiveCvVariant, useCvVariantsStore } from '../../state/cvVariantsStore.js';
 import { useActiveDesign, useDesignStore } from '../../state/designStore.js';
 import { useSettingsStore } from '../../state/settingsStore.js';
 import { ToggleGroup } from '../../ui/ToggleGroup.js';
@@ -19,8 +20,9 @@ export function DocumentToolbar() {
   const activeDocumentType = useDesignStore((s) => s.activeDocumentType);
   const setActiveDocumentType = useDesignStore((s) => s.setActiveDocumentType);
   const uiLocale = useSettingsStore((s) => s.settings.uiLocale);
-  const documentLocale = useSettingsStore((s) => s.settings.documentLocale);
-  const setDocumentLocale = useSettingsStore((s) => s.setDocumentLocale);
+  const activeVariant = useActiveCvVariant();
+  const setDocumentLocale = useCvVariantsStore((s) => s.setDocumentLocale);
+  const documentLocale: Locale = activeVariant?.documentLocale ?? 'de';
   const [designEditorOpen, setDesignEditorOpen] = useState(false);
 
   const designs = getAllDesigns();
@@ -71,7 +73,7 @@ export function DocumentToolbar() {
             <select
               value={documentLocale}
               onChange={(e) => {
-                setDocumentLocale(e.target.value as Locale);
+                if (activeVariant) setDocumentLocale(activeVariant.id, e.target.value as Locale);
               }}
               className="appearance-none rounded-md border border-slate-300 bg-white py-1.5 pl-3 pr-8 text-sm shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
             >

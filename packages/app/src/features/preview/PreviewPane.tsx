@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCoverLetterStore } from '../../state/coverLetterStore.js';
+import { resolveCoverLetter, resolveResume } from '@cv/core';
+import { useCoverLetterProfileStore } from '../../state/coverLetterProfileStore.js';
+import { useActiveCoverLetterVariant } from '../../state/coverLetterVariantsStore.js';
+import { useActiveCvVariant } from '../../state/cvVariantsStore.js';
 import { useActiveDesign, useDesignStore } from '../../state/designStore.js';
 import { useResumeStore } from '../../state/resumeStore.js';
-import { useSettingsStore } from '../../state/settingsStore.js';
 import { usePagedPreview } from './usePagedPreview.js';
 
 const ZOOM_STEPS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2] as const;
@@ -14,16 +16,30 @@ const PADDING_PX = 32;
 export function PreviewPane() {
   const { t } = useTranslation();
 
-  const resume = useResumeStore((s) => s.resume);
-  const coverLetter = useCoverLetterStore((s) => s.coverLetter);
-  const documentLocale = useSettingsStore((s) => s.settings.documentLocale);
+  const profileResume = useResumeStore((s) => s.resume);
+  const coverLetterProfile = useCoverLetterProfileStore((s) => s.profile);
+  const activeCvVariant = useActiveCvVariant();
+  const activeClVariant = useActiveCoverLetterVariant();
   const design = useActiveDesign();
   const overrides = useDesignStore((s) => s.overrides);
   const activeDocumentType = useDesignStore((s) => s.activeDocumentType);
 
+  const resolvedResume = useMemo(
+    () => (activeCvVariant ? resolveResume(profileResume, activeCvVariant) : profileResume),
+    [profileResume, activeCvVariant],
+  );
+
+  const resolvedCoverLetter = useMemo(
+    () =>
+      activeClVariant ? resolveCoverLetter(coverLetterProfile, activeClVariant) : undefined,
+    [coverLetterProfile, activeClVariant],
+  );
+
+  const documentLocale = activeCvVariant?.documentLocale ?? 'de';
+
   const { hostRef, pageCount, generating } = usePagedPreview({
-    resume,
-    coverLetter,
+    resume: resolvedResume,
+    ...(resolvedCoverLetter ? { coverLetter: resolvedCoverLetter } : {}),
     design,
     overrides,
     locale: documentLocale,
@@ -34,7 +50,6 @@ export function PreviewPane() {
   const [fitZoom, setFitZoom] = useState(1);
   const [zoom, setZoom] = useState<number | null>(null); // null = fit-to-width
 
-  // Observe container width and compute fit-to-width scale
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -76,7 +91,6 @@ export function PreviewPane() {
 
   return (
     <div className="flex h-full flex-col">
-      {/* Toolbar: page count + zoom controls + rendering status */}
       <div className="flex shrink-0 items-center justify-between bg-slate-100 px-3 py-1.5">
         <span className="text-xs text-slate-500">
           {pageCount > 0 &&
@@ -147,7 +161,6 @@ export function PreviewPane() {
         </div>
       </div>
 
-      {/* Preview — Paged.js iframe, scaled via CSS transform for zoom */}
       <div
         ref={scrollRef}
         className="scrollbar-none relative min-h-0 flex-1 overflow-auto bg-slate-200 py-4"

@@ -2,7 +2,10 @@ import type { ExpandedSlotDefinition } from '@cv/layout-engine';
 import { createElement, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getAllComponents } from '@cv/layout-engine';
-import { useCoverLetterStore } from '../../state/coverLetterStore.js';
+import {
+  useActiveCoverLetterVariant,
+  useCoverLetterVariantsStore,
+} from '../../state/coverLetterVariantsStore.js';
 import {
   useActiveDesign,
   useDesignStore,
@@ -13,8 +16,12 @@ import { Collapsible } from '../../ui/Collapsible.js';
 import { Toggle } from '../../ui/Toggle.js';
 import { ToggleGroup } from '../../ui/ToggleGroup.js';
 import { SlotOptionsEditor } from '../designer/SlotOptionsEditor.js';
+import { SelectionPanel } from '../variants/SelectionPanel.js';
+import { VariantSwitcher } from '../variants/VariantSwitcher.js';
 import { CoverLetterEditor } from './CoverLetterEditor.js';
 import { getForm } from './formRegistry.js';
+
+const SELECTION_TAB = '__selection__';
 
 export function EditorTabs() {
   const { t } = useTranslation();
@@ -22,11 +29,21 @@ export function EditorTabs() {
   const activeDocumentType = useDesignStore((s) => s.activeDocumentType);
 
   const slotNames = design ? Object.keys(design.slots) : [];
-  const [activeTab, setActiveTab] = useState(slotNames[0] ?? '');
+  const cvTabs: { value: string; label: string }[] = [
+    {
+      value: SELECTION_TAB,
+      label: t('selectionPanel.tab', { defaultValue: 'Auswahl' }),
+    },
+    ...slotNames.map((name) => ({
+      value: name,
+      label: t(`slots.${name}`, { defaultValue: name }),
+    })),
+  ];
+  const [activeTab, setActiveTab] = useState<string>(SELECTION_TAB);
 
   useEffect(() => {
-    if (activeTab && !slotNames.includes(activeTab)) {
-      setActiveTab(slotNames[0] ?? '');
+    if (activeTab !== SELECTION_TAB && !slotNames.includes(activeTab)) {
+      setActiveTab(SELECTION_TAB);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [design?.id, activeDocumentType]);
@@ -52,6 +69,7 @@ export function EditorTabs() {
 
     return (
       <div className="flex flex-col gap-4">
+        <VariantSwitcher />
         {anschreibenTabs.length > 1 && (
           <ToggleGroup
             options={anschreibenTabs}
@@ -78,24 +96,22 @@ export function EditorTabs() {
     );
   }
 
+  const currentCvTab = cvTabs.some((tab) => tab.value === activeTab) ? activeTab : SELECTION_TAB;
+
   return (
     <div className="flex flex-col gap-4">
-      {/* Slot tabs */}
-      {slotNames.length > 1 && (
-        <ToggleGroup
-          options={slotNames.map((name) => ({
-            value: name,
-            label: t(`slots.${name}`, { defaultValue: name }),
-          }))}
-          value={activeTab || slotNames[0] || ''}
-          onChange={setActiveTab}
-        />
+      <VariantSwitcher />
+      {cvTabs.length > 1 && (
+        <ToggleGroup options={cvTabs} value={currentCvTab} onChange={setActiveTab} />
       )}
-      {(() => {
-        const currentSlot = activeTab || slotNames[0] || '';
-        const slotDef = design.slots[currentSlot];
-        return slotDef ? <SlotPanel slotName={currentSlot} slotDef={slotDef} /> : null;
-      })()}
+      {currentCvTab === SELECTION_TAB ? (
+        <SelectionPanel />
+      ) : (
+        (() => {
+          const slotDef = design.slots[currentCvTab];
+          return slotDef ? <SlotPanel slotName={currentCvTab} slotDef={slotDef} /> : null;
+        })()
+      )}
     </div>
   );
 }
@@ -114,14 +130,14 @@ interface AnschreibenSlotPanelProps {
 function AnschreibenSlotPanel({ zone, accepts, defaults }: AnschreibenSlotPanelProps) {
   const { t } = useTranslation();
   const uiLocale = useSettingsStore((s) => s.settings.uiLocale);
-  const cl = useCoverLetterStore((s) => s.coverLetter);
-  const toggleZoneComponent = useCoverLetterStore((s) => s.toggleZoneComponent);
-  const moveZoneComponent = useCoverLetterStore((s) => s.moveZoneComponent);
+  const variant = useActiveCoverLetterVariant();
+  const toggleZoneComponent = useCoverLetterVariantsStore((s) => s.toggleZoneComponent);
+  const moveZoneComponent = useCoverLetterVariantsStore((s) => s.moveZoneComponent);
   const allComponents = getAllComponents();
 
   // Resolved assignments: user overrides take precedence over design defaults
   const overrideKey = zone === 'header' ? 'headerComponentOverrides' : 'footerComponentOverrides';
-  const assignments = cl[overrideKey] ?? defaults;
+  const assignments = variant?.[overrideKey] ?? defaults;
 
   const compatibleComponents = allComponents.filter(
     (c) => c.id !== 'cover-letter-content' && c.allowedSlots.some((st) => accepts.includes(st)),
@@ -162,14 +178,16 @@ function AnschreibenSlotPanel({ zone, accepts, defaults }: AnschreibenSlotPanelP
           enabled={item.enabled}
           assignments={assignments}
           onToggle={() => {
-            toggleZoneComponent(zone, item.def.id, defaults);
+            if (!variant) return;
+            toggleZoneComponent(variant.id, zone, item.def.id, defaults);
           }}
           onMove={
             item.enabled
               ? (dir) => {
+                  if (!variant) return;
                   const idx = assignments.findIndex((a) => a.componentId === item.def.id);
                   if (idx < 0) return;
-                  moveZoneComponent(zone, idx, idx + dir, defaults);
+                  moveZoneComponent(variant.id, zone, idx, idx + dir, defaults);
                 }
               : undefined
           }

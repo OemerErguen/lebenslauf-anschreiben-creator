@@ -1,10 +1,16 @@
 export * from './schema/resume.js';
 export * from './schema/coverLetter.js';
+export * from './schema/coverLetterProfile.js';
+export * from './schema/coverLetterVariant.js';
+export * from './schema/cvVariant.js';
 export * from './schema/settings.js';
 export * from './schema/common.js';
 export * from './schema/preset.js';
 export * from './schema/userOverrides.js';
+export * from './schema/persistedState.js';
 export type * from './types.js';
 export * from './migrations/index.js';
 export * from './serialize.js';
 export * from './sampleData.js';
+export * from './resolveResume.js';
+export * from './resolveCoverLetter.js';

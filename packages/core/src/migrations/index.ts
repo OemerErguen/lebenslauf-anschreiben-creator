@@ -1,32 +1,7 @@
-import type { CoverLetter } from '../schema/coverLetter.js';
-import type { Resume } from '../schema/resume.js';
-import type { Settings } from '../schema/settings.js';
-import type { UserOverrides } from '../schema/userOverrides.js';
+import { CURRENT_SCHEMA_VERSION } from '../schema/persistedState.js';
 
-/**
- * Schema version for persisted state. Bump whenever a breaking change to any
- * schema is merged, and add a migration step to `migrations` below.
- */
-export const CURRENT_SCHEMA_VERSION = 1 as const;
-
-/**
- * Design-related state persisted across export/import.
- */
-export interface PersistedDesign {
-  activeDesignId: string;
-  overrides: UserOverrides;
-}
-
-/**
- *
- */
-export interface PersistedState {
-  schemaVersion: number;
-  resume: Resume;
-  coverLetter: CoverLetter;
-  settings: Settings;
-  design?: PersistedDesign | undefined;
-}
+export { CURRENT_SCHEMA_VERSION } from '../schema/persistedState.js';
+export type { PersistedState, UserProfile } from '../schema/persistedState.js';
 
 type Migration = (data: unknown) => unknown;
 
@@ -37,9 +12,10 @@ type Migration = (data: unknown) => unknown;
 const migrations: Migration[] = [];
 
 /**
- *
+ * Run all required migrations to bring `rawData` up to {@link CURRENT_SCHEMA_VERSION}.
+ * Throws on missing migrations or future versions.
  * @param rawData
- * @returns The migrated state object with the current schema version
+ * @returns The migrated state object with schemaVersion set to CURRENT_SCHEMA_VERSION.
  */
 export function runMigrations(rawData: unknown): unknown {
   if (typeof rawData !== 'object' || rawData === null) {

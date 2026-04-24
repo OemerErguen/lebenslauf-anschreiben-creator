@@ -1,15 +1,22 @@
 import { useTranslation } from 'react-i18next';
-import { useCoverLetterStore } from '../../../state/coverLetterStore.js';
+import {
+  useActiveCoverLetterVariant,
+  useCoverLetterVariantsStore,
+} from '../../../state/coverLetterVariantsStore.js';
 import { Button } from '../../../ui/Button.js';
 import { RichTextField } from '../../../ui/RichTextField.js';
 
 export function ParagraphList() {
   const { t } = useTranslation();
-  const paragraphs = useCoverLetterStore((s) => s.coverLetter.paragraphs);
-  const addParagraph = useCoverLetterStore((s) => s.addParagraph);
-  const removeParagraph = useCoverLetterStore((s) => s.removeParagraph);
-  const updateParagraph = useCoverLetterStore((s) => s.updateParagraph);
-  const moveParagraph = useCoverLetterStore((s) => s.moveParagraph);
+  const variant = useActiveCoverLetterVariant();
+  const addParagraph = useCoverLetterVariantsStore((s) => s.addParagraph);
+  const removeParagraph = useCoverLetterVariantsStore((s) => s.removeParagraph);
+  const updateParagraph = useCoverLetterVariantsStore((s) => s.updateParagraph);
+  const moveParagraph = useCoverLetterVariantsStore((s) => s.moveParagraph);
+
+  if (!variant) return null;
+
+  const paragraphs = variant.paragraphs;
 
   return (
     <div className="flex flex-col gap-3">
@@ -23,7 +30,7 @@ export function ParagraphList() {
               type="button"
               disabled={i === 0}
               onClick={() => {
-                moveParagraph(i, i - 1);
+                moveParagraph(variant.id, i, i - 1);
               }}
               className="rounded p-0.5 text-slate-400 hover:text-slate-600 disabled:opacity-30"
               title={t('designer.moveUp')}
@@ -43,7 +50,7 @@ export function ParagraphList() {
               type="button"
               disabled={i === paragraphs.length - 1}
               onClick={() => {
-                moveParagraph(i, i + 1);
+                moveParagraph(variant.id, i, i + 1);
               }}
               className="rounded p-0.5 text-slate-400 hover:text-slate-600 disabled:opacity-30"
               title={t('designer.moveDown')}
@@ -62,7 +69,7 @@ export function ParagraphList() {
             <button
               type="button"
               onClick={() => {
-                removeParagraph(i);
+                removeParagraph(variant.id, i);
               }}
               className="rounded p-0.5 text-slate-400 hover:text-red-500"
               title={t('coverLetterEditor.removeParagraph')}
@@ -83,12 +90,18 @@ export function ParagraphList() {
             label={`${i + 1}.`}
             value={p}
             onChange={(html) => {
-              updateParagraph(i, html);
+              updateParagraph(variant.id, i, html);
             }}
           />
         </div>
       ))}
-      <Button variant="secondary" size="sm" onClick={addParagraph}>
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={() => {
+          addParagraph(variant.id);
+        }}
+      >
         {t('coverLetterEditor.addParagraph')}
       </Button>
     </div>

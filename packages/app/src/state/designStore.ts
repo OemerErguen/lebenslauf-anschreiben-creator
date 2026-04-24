@@ -1,171 +1,213 @@
-import type { SlotAssignment } from '@cv/core';
-import type { DesignDefinition, DocumentType, ResolvedTokens } from '@cv/layout-engine';
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import type { DocumentType, SlotAssignment, UserOverrides } from '@cv/core';
+import type { DesignDefinition, ResolvedTokens } from '@cv/layout-engine';
+import { useMemo } from 'react';
 import {
   emptyOverrides,
   getDesign,
   resolveAllSlotOptions,
   resolveSlotAssignments,
   resolveTokens,
-  type UserOverrides,
 } from '@cv/layout-engine';
-import { STORAGE_KEYS } from './storageKeys.js';
+import { useCvVariantsStore } from './cvVariantsStore.js';
+import { useSettingsStore } from './settingsStore.js';
 
-interface DesignStore {
-  /** ID of the active design. */
+/**
+ * Façade preserving the legacy `useDesignStore` selector API. Internally, all
+ * design state lives on the active CV variant — this hook just relays reads
+ * and writes. UI-level fields (active document type) come from settingsStore.
+ */
+interface DesignFacade {
   activeDesignId: string;
-  /** User customizations on top of the design's defaults. */
   overrides: UserOverrides;
-  /** Which document type tab is active in the preview. */
   activeDocumentType: DocumentType;
 
-  // --- Actions ---
-
-  /** Switch to a different design, resetting all overrides to defaults. */
   applyDesign: (designId: string) => void;
-  /** Apply overrides from a preset (design + overrides bundle). */
   applyPresetOverrides: (designId: string, overrides: UserOverrides) => void;
 
-  /** Set a color override. */
   setColor: (key: string, value: string) => void;
-  /** Set a font override. */
   setFont: (key: string, value: string) => void;
-  /** Set the spacing override. */
   setSpacing: (value: string) => void;
-  /** Set a global design option override. */
   setOption: (key: string, value: unknown) => void;
-  /** Set a slot-level option override. */
   setSlotOption: (slotName: string, optionKey: string, value: unknown) => void;
-
-  /** Replace slot assignments for a specific slot. */
   setSlotAssignments: (slotName: string, assignments: SlotAssignment[]) => void;
-  /** Move a component within a slot. */
   moveComponent: (slotName: string, fromIndex: number, toIndex: number) => void;
-  /** Toggle a component on/off in a slot. */
   toggleComponent: (slotName: string, componentId: string) => void;
-  /** Update options for a component in a slot. */
   updateComponentOptions: (
     slotName: string,
     componentId: string,
     options: Record<string, unknown>,
   ) => void;
 
-  /** Set the active document type tab. */
   setActiveDocumentType: (type: DocumentType) => void;
 }
 
-export const useDesignStore = create<DesignStore>()(
-  persist(
-    (set) => ({
-      activeDesignId: 'sidebar-left',
-      overrides: { ...emptyOverrides },
-      activeDocumentType: 'lebenslauf',
+// ---------------------------------------------------------------------------
+// Action helpers — module-scope so identities are stable across renders.
+// They mutate the active variant via cvVariantsStore.
+// ---------------------------------------------------------------------------
 
-      applyDesign: (designId) =>
-        set({ activeDesignId: designId, overrides: { ...emptyOverrides } }),
+function getActiveVariantId(): string | undefined {
+  return useCvVariantsStore.getState().activeVariantId;
+}
 
-      applyPresetOverrides: (designId, overrides) => set({ activeDesignId: designId, overrides }),
+function getActiveOverrides(): UserOverrides {
+  const state = useCvVariantsStore.getState();
+  const v = state.variants.find((variant) => variant.id === state.activeVariantId);
+  return v?.design.overrides ?? emptyOverrides;
+}
 
-      setColor: (key, value) =>
-        set((s) => ({
-          overrides: { ...s.overrides, colors: { ...s.overrides.colors, [key]: value } },
-        })),
+function patchOverrides(patch: Partial<UserOverrides>): void {
+  const id = getActiveVariantId();
+  if (!id) return;
+  useCvVariantsStore.getState().patchDesignOverrides(id, patch);
+}
 
-      setFont: (key, value) =>
-        set((s) => ({
-          overrides: { ...s.overrides, fonts: { ...s.overrides.fonts, [key]: value } },
-        })),
+const designActions: Omit<
+  DesignFacade,
+  'activeDesignId' | 'overrides' | 'activeDocumentType' | 'setActiveDocumentType'
+> = {
+  applyDesign: (designId) => {
+    const id = getActiveVariantId();
+    if (!id) return;
+    useCvVariantsStore.getState().setDesignActiveId(id, designId);
+  },
 
-      setSpacing: (value) => set((s) => ({ overrides: { ...s.overrides, spacing: value } })),
+  applyPresetOverrides: (designId, overrides) => {
+    const id = getActiveVariantId();
+    if (!id) return;
+    useCvVariantsStore.getState().patchVariant(id, {
+      design: { activeDesignId: designId, overrides },
+    });
+  },
 
-      setOption: (key, value) =>
-        set((s) => ({
-          overrides: { ...s.overrides, options: { ...s.overrides.options, [key]: value } },
-        })),
+  setColor: (key, value) => {
+    const current = getActiveOverrides();
+    patchOverrides({ colors: { ...current.colors, [key]: value } });
+  },
 
-      setSlotOption: (slotName, optionKey, value) =>
-        set((s) => ({
-          overrides: {
-            ...s.overrides,
-            slotOptions: { ...s.overrides.slotOptions, [`${slotName}.${optionKey}`]: value },
-          },
-        })),
+  setFont: (key, value) => {
+    const current = getActiveOverrides();
+    patchOverrides({ fonts: { ...current.fonts, [key]: value } });
+  },
 
-      setSlotAssignments: (slotName, assignments) =>
-        set((s) => ({
-          overrides: {
-            ...s.overrides,
-            slotAssignments: { ...s.overrides.slotAssignments, [slotName]: assignments },
-          },
-        })),
+  setSpacing: (value) => {
+    patchOverrides({ spacing: value });
+  },
 
-      moveComponent: (slotName, fromIndex, toIndex) =>
-        set((s) => {
-          const design = getDesign(s.activeDesignId);
-          const defaults = design?.slots[slotName]?.defaultComponents ?? [];
-          const current = [...(s.overrides.slotAssignments[slotName] ?? defaults)];
-          const [item] = current.splice(fromIndex, 1);
-          if (!item) return s;
-          current.splice(toIndex, 0, item);
-          return {
-            overrides: {
-              ...s.overrides,
-              slotAssignments: { ...s.overrides.slotAssignments, [slotName]: current },
-            },
-          };
-        }),
+  setOption: (key, value) => {
+    const current = getActiveOverrides();
+    patchOverrides({ options: { ...current.options, [key]: value } });
+  },
 
-      toggleComponent: (slotName, componentId) =>
-        set((s) => {
-          const design = getDesign(s.activeDesignId);
-          const defaults = design?.slots[slotName]?.defaultComponents ?? [];
-          const current = s.overrides.slotAssignments[slotName] ?? defaults;
-          const exists = current.some((a) => a.componentId === componentId);
-          const updated = exists
-            ? current.filter((a) => a.componentId !== componentId)
-            : [...current, { componentId, options: {} }];
-          return {
-            overrides: {
-              ...s.overrides,
-              slotAssignments: { ...s.overrides.slotAssignments, [slotName]: updated },
-            },
-          };
-        }),
+  setSlotOption: (slotName, optionKey, value) => {
+    const current = getActiveOverrides();
+    patchOverrides({
+      slotOptions: { ...current.slotOptions, [`${slotName}.${optionKey}`]: value },
+    });
+  },
 
-      updateComponentOptions: (slotName, componentId, options) =>
-        set((s) => {
-          const design = getDesign(s.activeDesignId);
-          const defaults = design?.slots[slotName]?.defaultComponents ?? [];
-          const current = s.overrides.slotAssignments[slotName] ?? defaults;
-          const updated = current.map((a) =>
-            a.componentId === componentId ? { ...a, options: { ...a.options, ...options } } : a,
-          );
-          return {
-            overrides: {
-              ...s.overrides,
-              slotAssignments: { ...s.overrides.slotAssignments, [slotName]: updated },
-            },
-          };
-        }),
+  setSlotAssignments: (slotName, assignments) => {
+    const id = getActiveVariantId();
+    if (!id) return;
+    useCvVariantsStore.getState().setDesignSlotAssignments(id, slotName, assignments);
+  },
 
-      setActiveDocumentType: (type) => set({ activeDocumentType: type }),
+  moveComponent: (slotName, fromIndex, toIndex) => {
+    const id = getActiveVariantId();
+    if (!id) return;
+    const overrides = getActiveOverrides();
+    const designId = useCvVariantsStore
+      .getState()
+      .variants.find((v) => v.id === id)?.design.activeDesignId;
+    const design = designId ? getDesign(designId) : undefined;
+    const defaults = design?.slots[slotName]?.defaultComponents ?? [];
+    const current = [...(overrides.slotAssignments[slotName] ?? defaults)];
+    const [item] = current.splice(fromIndex, 1);
+    if (!item) return;
+    current.splice(toIndex, 0, item);
+    useCvVariantsStore.getState().setDesignSlotAssignments(id, slotName, current);
+  },
+
+  toggleComponent: (slotName, componentId) => {
+    const id = getActiveVariantId();
+    if (!id) return;
+    const overrides = getActiveOverrides();
+    const designId = useCvVariantsStore
+      .getState()
+      .variants.find((v) => v.id === id)?.design.activeDesignId;
+    const design = designId ? getDesign(designId) : undefined;
+    const defaults = design?.slots[slotName]?.defaultComponents ?? [];
+    const current = overrides.slotAssignments[slotName] ?? defaults;
+    const exists = current.some((a) => a.componentId === componentId);
+    const updated = exists
+      ? current.filter((a) => a.componentId !== componentId)
+      : [...current, { componentId, options: {} }];
+    useCvVariantsStore.getState().setDesignSlotAssignments(id, slotName, updated);
+  },
+
+  updateComponentOptions: (slotName, componentId, options) => {
+    const id = getActiveVariantId();
+    if (!id) return;
+    const overrides = getActiveOverrides();
+    const designId = useCvVariantsStore
+      .getState()
+      .variants.find((v) => v.id === id)?.design.activeDesignId;
+    const design = designId ? getDesign(designId) : undefined;
+    const defaults = design?.slots[slotName]?.defaultComponents ?? [];
+    const current = overrides.slotAssignments[slotName] ?? defaults;
+    const updated = current.map((a) =>
+      a.componentId === componentId ? { ...a, options: { ...a.options, ...options } } : a,
+    );
+    useCvVariantsStore.getState().setDesignSlotAssignments(id, slotName, updated);
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Hook surface
+// ---------------------------------------------------------------------------
+
+/**
+ * Drop-in replacement for the legacy zustand `useDesignStore` selector hook.
+ * Reads come from the active variant's design field; actions mutate the active
+ * variant. `activeDocumentType` is sourced from globalSettings.
+ */
+export function useDesignStore<T>(selector: (state: DesignFacade) => T): T {
+  const activeDesignId = useCvVariantsStore((s) => {
+    const v = s.variants.find((variant) => variant.id === s.activeVariantId);
+    return v?.design.activeDesignId ?? 'sidebar-left';
+  });
+
+  const overrides = useCvVariantsStore((s) => {
+    const v = s.variants.find((variant) => variant.id === s.activeVariantId);
+    return v?.design.overrides ?? emptyOverrides;
+  });
+
+  const activeDocumentType = useSettingsStore((s) => s.settings.activeDocumentType);
+  const setActiveDocumentType = useSettingsStore((s) => s.setActiveDocumentType);
+
+  const facade = useMemo<DesignFacade>(
+    () => ({
+      activeDesignId,
+      overrides,
+      activeDocumentType,
+      setActiveDocumentType,
+      ...designActions,
     }),
-    { name: STORAGE_KEYS.settings + '-design' },
-  ),
-);
+    [activeDesignId, overrides, activeDocumentType, setActiveDocumentType],
+  );
+
+  return selector(facade);
+}
 
 // ---------------------------------------------------------------------------
-// Derived selectors — compute resolved values from design + overrides
+// Derived selectors — same API as before
 // ---------------------------------------------------------------------------
 
-/** Get the active DesignDefinition. */
 export function useActiveDesign(): DesignDefinition | undefined {
   const id = useDesignStore((s) => s.activeDesignId);
   return getDesign(id);
 }
 
-/** Get resolved tokens (design defaults merged with user overrides). */
 export function useResolvedTokens(): ResolvedTokens | undefined {
   const design = useActiveDesign();
   const overrides = useDesignStore((s) => s.overrides);
@@ -173,7 +215,6 @@ export function useResolvedTokens(): ResolvedTokens | undefined {
   return resolveTokens(design, overrides);
 }
 
-/** Get resolved slot assignments. */
 export function useResolvedSlotAssignments(): Record<string, SlotAssignment[]> {
   const design = useActiveDesign();
   const overrides = useDesignStore((s) => s.overrides);
@@ -181,7 +222,6 @@ export function useResolvedSlotAssignments(): Record<string, SlotAssignment[]> {
   return resolveSlotAssignments(design, overrides);
 }
 
-/** Get resolved slot options as flat map. */
 export function useResolvedSlotOptions(): Record<string, unknown> {
   const design = useActiveDesign();
   const overrides = useDesignStore((s) => s.overrides);

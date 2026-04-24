@@ -24,5 +24,15 @@ export type {
   Skill,
   Work,
 } from './schema/resume.js';
-export type { CoverLetter, CoverLetterParty } from './schema/coverLetter.js';
-export type { SectionVisibility, Settings } from './schema/settings.js';
+export type { CoverLetterParty } from './schema/coverLetter.js';
+export type { CoverLetterProfile, ParagraphTemplate } from './schema/coverLetterProfile.js';
+export type { CoverLetterVariant } from './schema/coverLetterVariant.js';
+export type {
+  CVVariant,
+  SectionSelections,
+  SectionVisibility,
+  VariantDesign,
+} from './schema/cvVariant.js';
+export type { DocumentType, GlobalSettings } from './schema/settings.js';
+export type { PersistedState, UserProfile } from './schema/persistedState.js';
+export type { ResolvedCoverLetter } from './resolveCoverLetter.js';

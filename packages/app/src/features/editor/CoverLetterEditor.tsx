@@ -1,6 +1,10 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCoverLetterStore } from '../../state/coverLetterStore.js';
+import { useCoverLetterProfileStore } from '../../state/coverLetterProfileStore.js';
+import {
+  useActiveCoverLetterVariant,
+  useCoverLetterVariantsStore,
+} from '../../state/coverLetterVariantsStore.js';
 import { Button } from '../../ui/Button.js';
 import { Field } from '../../ui/Field.js';
 import { SignaturePad } from '../../ui/SignaturePad.js';
@@ -10,14 +14,36 @@ import { isValidImageFile, processSignatureFile } from '../../utils/imageUtils.j
 import { LetterSection } from './cover-letter/LetterSection.js';
 import { ParagraphList } from './cover-letter/ParagraphList.js';
 
+/**
+ * Editor for a single cover letter. Profile-level fields (sender, signature,
+ * defaults) always edit the shared cover-letter profile pool; per-letter
+ * fields (recipient, subject, paragraphs) edit the active variant.
+ */
 export function CoverLetterEditor() {
   const { t } = useTranslation();
-  const cl = useCoverLetterStore((s) => s.coverLetter);
-  const patchCoverLetter = useCoverLetterStore((s) => s.patchCoverLetter);
-  const patchRecipient = useCoverLetterStore((s) => s.patchRecipient);
-  const patchSender = useCoverLetterStore((s) => s.patchSender);
-  const setDin5008Form = useCoverLetterStore((s) => s.setDin5008Form);
+
+  // Profile pool (shared across all letters)
+  const profile = useCoverLetterProfileStore((s) => s.profile);
+  const patchProfile = useCoverLetterProfileStore((s) => s.patchProfile);
+  const patchSender = useCoverLetterProfileStore((s) => s.patchSender);
+
+  // Active variant (per-letter data)
+  const variant = useActiveCoverLetterVariant();
+  const patchVariant = useCoverLetterVariantsStore((s) => s.patchVariant);
+  const patchRecipient = useCoverLetterVariantsStore((s) => s.patchRecipient);
+
   const signatureInputRef = useRef<HTMLInputElement>(null);
+
+  if (!variant) {
+    return (
+      <div className="rounded-lg border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
+        {t('coverLetterEditor.noVariant', {
+          defaultValue:
+            'No cover letter variant selected. Create one from the variant manager to start writing.',
+        })}
+      </div>
+    );
+  }
 
   const handleSignatureUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -27,43 +53,51 @@ export function CoverLetterEditor() {
       return;
     }
     const dataUrl = await processSignatureFile(file);
-    patchCoverLetter({ signatureImage: dataUrl });
+    patchProfile({ signatureImage: dataUrl });
   };
 
   const updateRecipientLocation = (patch: Record<string, string>) => {
-    patchRecipient({ location: { ...cl.recipient.location, ...patch } });
+    patchRecipient(variant.id, {
+      location: { ...variant.recipient.location, ...patch },
+    });
   };
 
   const updateSenderLocation = (patch: Record<string, string>) => {
-    patchSender({ location: { ...cl.sender.location, ...patch } });
+    patchSender({ location: { ...profile.sender.location, ...patch } });
   };
 
-  const sender = cl.sender;
+  const sender = profile.sender;
+  const din5008Form = variant.din5008Form ?? profile.defaultDin5008Form;
+  const showFoldMarks = variant.showFoldMarks ?? profile.defaultShowFoldMarks;
+  const showSenderInfo = variant.showSenderInfo ?? profile.defaultShowSenderInfo;
+  const closing = variant.closingOverride ?? profile.defaultClosing;
+  const signatureName = variant.signatureNameOverride ?? profile.signatureName;
+  const signatureImage = variant.signatureImageOverride ?? profile.signatureImage;
 
   return (
     <div className="flex flex-col gap-4">
-      {/* DIN 5008 Settings */}
+      {/* DIN 5008 Settings — per-letter override on top of profile defaults */}
       <LetterSection title={t('coverLetterEditor.din5008Form')}>
         <ToggleGroup
           options={[
             { value: 'B', label: t('coverLetterEditor.formB') },
             { value: 'A', label: t('coverLetterEditor.formA') },
           ]}
-          value={cl.din5008Form}
+          value={din5008Form}
           onChange={(v) => {
-            setDin5008Form(v);
+            patchVariant(variant.id, { din5008Form: v });
           }}
         />
         <Toggle
-          checked={cl.showFoldMarks}
+          checked={showFoldMarks}
           onChange={(checked) => {
-            patchCoverLetter({ showFoldMarks: checked });
+            patchVariant(variant.id, { showFoldMarks: checked });
           }}
           label={t('coverLetterEditor.showFoldMarks')}
         />
       </LetterSection>
 
-      {/* Sender */}
+      {/* Sender — lives in the profile pool, same across all letters */}
       <LetterSection title={t('coverLetterEditor.senderTitle')}>
         <Field
           label={t('coverLetterEditor.name')}
@@ -114,32 +148,32 @@ export function CoverLetterEditor() {
         />
       </LetterSection>
 
-      {/* Recipient */}
+      {/* Recipient — per-letter */}
       <LetterSection title={t('coverLetterEditor.recipientTitle')}>
         <Toggle
-          checked={cl.showSenderInfo}
+          checked={showSenderInfo}
           onChange={(checked) => {
-            patchCoverLetter({ showSenderInfo: checked });
+            patchVariant(variant.id, { showSenderInfo: checked });
           }}
           label={t('coverLetterEditor.showSenderInfo')}
         />
         <Field
           label={t('coverLetterEditor.company')}
-          value={cl.recipient.company ?? ''}
+          value={variant.recipient.company ?? ''}
           onChange={(e) => {
-            patchRecipient({ company: e.target.value });
+            patchRecipient(variant.id, { company: e.target.value });
           }}
         />
         <Field
           label={t('coverLetterEditor.name')}
-          value={cl.recipient.name}
+          value={variant.recipient.name}
           onChange={(e) => {
-            patchRecipient({ name: e.target.value });
+            patchRecipient(variant.id, { name: e.target.value });
           }}
         />
         <Field
           label={t('coverLetterEditor.address')}
-          value={cl.recipient.location?.address ?? ''}
+          value={variant.recipient.location?.address ?? ''}
           onChange={(e) => {
             updateRecipientLocation({ address: e.target.value });
           }}
@@ -147,7 +181,7 @@ export function CoverLetterEditor() {
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <Field
             label={t('coverLetterEditor.postalCode')}
-            value={cl.recipient.location?.postalCode ?? ''}
+            value={variant.recipient.location?.postalCode ?? ''}
             onChange={(e) => {
               updateRecipientLocation({ postalCode: e.target.value });
             }}
@@ -155,7 +189,7 @@ export function CoverLetterEditor() {
           <div className="sm:col-span-2">
             <Field
               label={t('coverLetterEditor.city')}
-              value={cl.recipient.location?.city ?? ''}
+              value={variant.recipient.location?.city ?? ''}
               onChange={(e) => {
                 updateRecipientLocation({ city: e.target.value });
               }}
@@ -164,7 +198,7 @@ export function CoverLetterEditor() {
         </div>
         <Field
           label={t('coverLetterEditor.country')}
-          value={cl.recipient.location?.countryCode ?? ''}
+          value={variant.recipient.location?.countryCode ?? ''}
           placeholder="DE"
           onChange={(e) => {
             updateRecipientLocation({ countryCode: e.target.value });
@@ -172,70 +206,70 @@ export function CoverLetterEditor() {
         />
       </LetterSection>
 
-      {/* Letter Details */}
+      {/* Letter details — per-letter */}
       <LetterSection title={t('coverLetterEditor.metaTitle')}>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <Field
             label={t('coverLetterEditor.place')}
-            value={cl.place ?? ''}
+            value={variant.place ?? ''}
             onChange={(e) => {
-              patchCoverLetter({ place: e.target.value });
+              patchVariant(variant.id, { place: e.target.value });
             }}
           />
           <Field
             label={t('coverLetterEditor.date')}
             type="date"
-            value={cl.date ?? ''}
+            value={variant.date ?? ''}
             onChange={(e) => {
-              patchCoverLetter({ date: e.target.value });
+              patchVariant(variant.id, { date: e.target.value });
             }}
           />
         </div>
         <Field
           label={t('coverLetterEditor.subject')}
-          value={cl.subject}
+          value={variant.subject}
           onChange={(e) => {
-            patchCoverLetter({ subject: e.target.value });
+            patchVariant(variant.id, { subject: e.target.value });
           }}
         />
         <Field
           label={t('coverLetterEditor.reference')}
-          value={cl.reference}
+          value={variant.reference}
           placeholder={t('coverLetterEditor.referencePlaceholder')}
           onChange={(e) => {
-            patchCoverLetter({ reference: e.target.value });
+            patchVariant(variant.id, { reference: e.target.value });
           }}
         />
       </LetterSection>
 
-      {/* Body */}
+      {/* Body — per-letter */}
       <LetterSection title={t('coverLetterEditor.bodyTitle')}>
         <Field
           label={t('coverLetterEditor.salutation')}
-          value={cl.salutation}
+          value={variant.salutation}
           placeholder={t('coverLetterEditor.salutationPlaceholder')}
           onChange={(e) => {
-            patchCoverLetter({ salutation: e.target.value });
+            patchVariant(variant.id, { salutation: e.target.value });
           }}
         />
         <ParagraphList />
       </LetterSection>
 
-      {/* Closing & Signature */}
+      {/* Closing & signature — defaults from profile, overridable per-letter */}
       <LetterSection title={t('coverLetterEditor.closingTitle')}>
         <Field
           label={t('coverLetterEditor.closing')}
-          value={cl.closing}
+          value={closing}
           placeholder={t('coverLetterEditor.closingPlaceholder')}
           onChange={(e) => {
-            patchCoverLetter({ closing: e.target.value });
+            patchVariant(variant.id, { closingOverride: e.target.value });
           }}
         />
         <Field
           label={t('coverLetterEditor.signatureName')}
-          value={cl.signatureName ?? ''}
+          value={signatureName}
           onChange={(e) => {
-            patchCoverLetter({ signatureName: e.target.value });
+            patchProfile({ signatureName: e.target.value });
           }}
         />
 
@@ -243,10 +277,10 @@ export function CoverLetterEditor() {
           <span className="font-medium text-slate-700">
             {t('coverLetterEditor.signatureImage')}
           </span>
-          {cl.signatureImage ? (
+          {signatureImage ? (
             <div className="flex items-center gap-3">
               <img
-                src={cl.signatureImage}
+                src={signatureImage}
                 alt=""
                 className="h-10 rounded border border-slate-200"
               />
@@ -254,7 +288,7 @@ export function CoverLetterEditor() {
                 variant="danger"
                 size="sm"
                 onClick={() => {
-                  patchCoverLetter({ signatureImage: undefined });
+                  patchProfile({ signatureImage: '' });
                 }}
               >
                 {t('coverLetterEditor.removeSignature')}
@@ -263,7 +297,7 @@ export function CoverLetterEditor() {
           ) : (
             <SignatureInput
               onSave={(url) => {
-                patchCoverLetter({ signatureImage: url });
+                patchProfile({ signatureImage: url });
               }}
               signatureInputRef={signatureInputRef}
               handleSignatureUpload={(e) => {

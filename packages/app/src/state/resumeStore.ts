@@ -3,6 +3,11 @@ import { persist } from 'zustand/middleware';
 import { type Resume, sampleResume } from '@cv/core';
 import { STORAGE_KEYS } from './storageKeys.js';
 
+/**
+ * The user-profile resume pool — every job, school, skill, certificate the user
+ * owns. CV variants reference IDs from this pool to build tailored CVs; this
+ * store always holds the *complete* set, never a filtered view.
+ */
 interface ResumeStore {
   resume: Resume;
   setResume: (resume: Resume) => void;
