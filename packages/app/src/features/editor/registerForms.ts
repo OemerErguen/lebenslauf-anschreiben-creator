@@ -1,4 +1,5 @@
 import { registerForm } from './formRegistry.js';
+import { AwardsForm } from './sections/AwardsForm.js';
 import { CertificatesForm } from './sections/CertificatesForm.js';
 import { ContactInfoForm } from './sections/ContactInfoForm.js';
 import { CustomSectionForm } from './sections/CustomSectionForm.js';
@@ -11,6 +12,7 @@ import { LetterTitleForm } from './sections/LetterTitleForm.js';
 import { PersonalInfoForm } from './sections/PersonalInfoForm.js';
 import { PhotoForm } from './sections/PhotoForm.js';
 import { ProjectsForm } from './sections/ProjectsForm.js';
+import { PublicationsForm } from './sections/PublicationsForm.js';
 import { SkillsForm } from './sections/SkillsForm.js';
 import { SummaryForm } from './sections/SummaryForm.js';
 import { WorkForm } from './sections/WorkForm.js';
@@ -32,6 +34,8 @@ export function registerAllForms(): void {
   registerForm('languages-list', LanguagesForm);
   registerForm('projects-list', ProjectsForm);
   registerForm('certificates-list', CertificatesForm);
+  registerForm('awards-list', AwardsForm);
+  registerForm('publications-list', PublicationsForm);
   registerForm('interests-list', InterestsForm);
   registerForm('custom-section', CustomSectionForm);
   registerForm('letter-photo', LetterPhotoForm);

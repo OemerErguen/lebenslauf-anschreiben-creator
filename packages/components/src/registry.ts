@@ -1,6 +1,7 @@
 import type { ComponentDefinition } from '@cv/layout-engine';
 import { z } from 'zod';
 import { registerComponent } from '@cv/layout-engine';
+import { AwardsList } from './AwardsList.js';
 import { CertificatesList } from './CertificatesList.js';
 import { ContactInfo } from './ContactInfo.js';
 import { CustomSection } from './CustomSection.js';
@@ -14,6 +15,7 @@ import { LetterTitle } from './LetterTitle.js';
 import { PersonalInfo } from './PersonalInfo.js';
 import { Photo } from './Photo.js';
 import { ProjectsList } from './ProjectsList.js';
+import { PublicationsList } from './PublicationsList.js';
 import { SkillsList } from './SkillsList.js';
 import { Summary } from './Summary.js';
 
@@ -150,6 +152,24 @@ const componentDefinitions: ComponentDefinition[] = [
     optionsSchema: z.object({}),
     defaultOptions: {},
     render: CertificatesList,
+  },
+  {
+    id: 'awards-list',
+    name: { de: 'Auszeichnungen', en: 'Awards' },
+    dataFields: ['awards'],
+    allowedSlots: ['main', 'sidebar', 'aside'],
+    optionsSchema: z.object({}),
+    defaultOptions: {},
+    render: AwardsList,
+  },
+  {
+    id: 'publications-list',
+    name: { de: 'Publikationen', en: 'Publications' },
+    dataFields: ['publications'],
+    allowedSlots: ['main', 'sidebar', 'aside'],
+    optionsSchema: z.object({}),
+    defaultOptions: {},
+    render: PublicationsList,
   },
   {
     id: 'interests-list',

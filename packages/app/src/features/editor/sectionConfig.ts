@@ -82,6 +82,20 @@ export const SECTION_CONFIGS: readonly SectionConfig[] = [
     summarize: (item) => joinParts(item.name, item.issuer),
   },
   {
+    id: 'awards',
+    componentIds: ['awards-list'],
+    titleKey: 'sections.awards',
+    isList: true,
+    summarize: (item) => joinParts(item.title, item.awarder),
+  },
+  {
+    id: 'publications',
+    componentIds: ['publications-list'],
+    titleKey: 'sections.publications',
+    isList: true,
+    summarize: (item) => joinParts(item.name, item.publisher),
+  },
+  {
     id: 'interests',
     componentIds: ['interests-list'],
     titleKey: 'sections.interests',
