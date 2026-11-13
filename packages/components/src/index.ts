@@ -9,6 +9,8 @@ export { SkillsList } from './SkillsList.js';
 export { LanguagesList } from './LanguagesList.js';
 export { ProjectsList } from './ProjectsList.js';
 export { CertificatesList } from './CertificatesList.js';
+export { AwardsList } from './AwardsList.js';
+export { PublicationsList } from './PublicationsList.js';
 export { InterestsList } from './InterestsList.js';
 export { CustomSection } from './CustomSection.js';
 export { Din5008Letter } from './Din5008Letter.js';

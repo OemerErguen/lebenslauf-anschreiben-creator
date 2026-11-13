@@ -125,6 +125,19 @@
     "date": "Date",
     "url": "URL"
   },
+  "awards": {
+    "title": "Award",
+    "awarder": "Awarded by",
+    "date": "Date",
+    "summary": "Description"
+  },
+  "publications": {
+    "name": "Title",
+    "publisher": "Publisher",
+    "releaseDate": "Publication date",
+    "url": "URL",
+    "summary": "Description"
+  },
   "interests": {
     "name": "Interest"
   },

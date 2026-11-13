@@ -138,6 +138,14 @@ body {
   color: var(--cv-text);
 }
 
+a.cv-entry-url {
+  display: inline;
+  color: var(--cv-muted);
+  font-size: 8.5pt;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
 .cv-entry-org {
   color: var(--cv-muted);
   font-size: 9.5pt;
